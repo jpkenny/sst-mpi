@@ -9,29 +9,13 @@
 #   SST/macroscale directory.
 #
 
-include $(top_srcdir)/Makefile.common
+ACLOCAL_AMFLAGS = -I acinclude
 
-noinst_LTLIBRARIES = libsstmac_mpi.la
+noinst_LTLIBRARIES = libsst_mpi.la
 
-library_includedir=$(includedir)/sumi-mpi
+library_includedir = $(includedir)
 
-AM_CPPFLAGS += \
-	-I$(top_srcdir)/sumi \
-	-I$(top_srcdir)/include \
-	-I$(top_builddir)/sumi
-
-if HAVE_OTF2
-AM_CPPFLAGS += \
-	-I$(top_srcdir)/sst-dumpi \
-	-I$(top_builddir)/sst-dumpi \
-  $(OTF2_CPPFLAGS)
-endif
-
-#-I$(top_builddir)/sst-dumpi -I$(top_srcdir)/sst-dumpi
-
-AM_FCFLAGS = -I$(top_builddir) -I$(top_srcdir) -m32 -m64
-
-libsstmac_mpi_la_SOURCES = \
+libsst_mpi_la_SOURCES = \
   mpi_comm/mpi_comm.cc \
   mpi_comm/mpi_group.cc \
   mpi_comm/keyval.cc \
@@ -63,7 +47,7 @@ libsstmac_mpi_la_SOURCES = \
   mpi_message.cc \
   mpi_request.cc 
 
-nobase_library_include_HEADERS = \
+library_include_HEADERS = \
   mpi_comm/keyval.h \
   mpi_comm/keyval_fwd.h \
   mpi_comm/mpi_comm.h \
@@ -98,7 +82,3 @@ nobase_library_include_HEADERS = \
   otf2_output_stat_fwd.h \
   sstmac_mpi.h \
   sstmac_mpi_macro.h 
-  
-
-
-
