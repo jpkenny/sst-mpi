@@ -42,10 +42,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef MPI_DEBUG_H
-#define MPI_DEBUG_H
+#pragma once
 
-#include <sprockit/debug.h>
+//#include <sprockit/debug.h>
 
 DeclareDebugSlot(mpi)
 DeclareDebugSlot(mpi_request)
@@ -60,7 +59,3 @@ DeclareDebugSlot(mpi_collective)
 
 #define mpi_debug(rank, flags, ...) \
   mpi_cond_debug(rank, flags, true, __VA_ARGS__)
-
-
-
-#endif // MPI_DEBUG_H

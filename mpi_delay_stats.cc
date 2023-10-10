@@ -41,11 +41,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Questions? Contact sst-macro-help@sandia.gov
 */
-#include <sumi-mpi/mpi_delay_stats.h>
+#include <mpi_delay_stats.h>
 
 #if !SSTMAC_INTEGRATED_SST_CORE
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 DelayStats::DelayStats(SST::BaseComponent* comp, const std::string& name,
             const std::string& subName, SST::Params& params)

@@ -42,10 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_request.h>
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
+#include <mpi_request.h>
+#include <mpi_comm/mpi_comm.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 CollectiveOpBase::CollectiveOpBase(MpiComm* cm) :
   packed_send(false), 

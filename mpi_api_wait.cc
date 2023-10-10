@@ -42,15 +42,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/otf2_output_stat.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
-#include <sstmac/software/process/ftq_scope.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue.h>
+//#include <sumi-mpi/otf2_output_stat.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
+//#include <sstmac/software/process/ftq_scope.h>
 #include <cassert>
 
-namespace sumi {
+namespace SST::MPI {
 
 int
 MpiApi::wait(MPI_Request *request, MPI_Status *status)

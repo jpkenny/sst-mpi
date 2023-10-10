@@ -42,10 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sprockit/stl_string.h>
+#include <mpi_api.h>
+#include <sst/elements/mercury/common/stl_string.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 int
 MpiApi::winFlush(int  /*rank*/, MPI_Win  /*win*/)

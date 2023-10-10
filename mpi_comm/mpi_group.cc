@@ -42,12 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_comm/mpi_group.h>
-#include <sumi-mpi/mpi_types.h>
-#include <sprockit/errors.h>
-#include <sprockit/stl_string.h>
+#include <mpi_comm/mpi_group.h>
+#include <mpi_types.h>
+#include <sst/elements/mercury/common/errors.h>
+#include <sst/elements/mercury/common/stl_string.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiGroup::MpiGroup(const std::vector<TaskId>& tl) :
   local_to_world_map_(tl),

@@ -42,16 +42,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMMFACTORY_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMMFACTORY_H_INCLUDED
+#include <mpi_comm/mpi_comm.h>
+#include <mpi_types/mpi_type.h>
+#include <mpi_api_fwd.h>
+#include <sst/elements/mercury/operating_system/process/task_id.h>
 
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
-#include <sumi-mpi/mpi_types/mpi_type.h>
-#include <sumi-mpi/mpi_api_fwd.h>
-#include <sstmac/software/process/task_id.h>
+#pragma once
 
-namespace sumi {
-
+namespace SST::MPI {
 
 /**
  * Construct mpi communicators.
@@ -101,5 +99,3 @@ class MpiCommFactory  {
 };
 
 }
-
-#endif

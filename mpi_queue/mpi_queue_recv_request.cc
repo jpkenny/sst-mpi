@@ -42,17 +42,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request.h>
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sumi-mpi/mpi_message.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/mpi_debug.h>
-#include <sumi-mpi/mpi_api.h>
-#include <sprockit/debug.h>
-#include <sprockit/errors.h>
-#include <sstmac/null_buffer.h>
+#include <mpi_queue/mpi_queue_recv_request.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <mpi_message.h>
+#include <mpi_queue/mpi_queue.h>
+#include <mpi_debug.h>
+#include <mpi_api.h>
+//#include <sprockit/debug.h>
+#include <sst/elements/mercury/common/errors.h>
+#include <sst/elements/mercury/common/null_buffer.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiQueueRecvRequest::MpiQueueRecvRequest(
   sstmac::Timestamp start,

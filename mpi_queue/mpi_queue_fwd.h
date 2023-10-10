@@ -42,13 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef sstmac_software_mpi_queue_fwd_h_
-#define sstmac_software_mpi_queue_fwd_h_
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 class MpiQueue;
 
 }
-
-#endif

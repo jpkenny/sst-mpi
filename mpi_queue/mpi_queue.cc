@@ -42,42 +42,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_probe_request.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sstmac/software/process/app.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue.h>
+#include <mpi_queue/mpi_queue_recv_request.h>
+#include <mpi_queue/mpi_queue_probe_request.h>
+#include <mpi_status.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <sst/elements/mercury/operating_system/process/app.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
 
 #include <unusedvariablemacro.h>
 
-#include <sprockit/sim_parameters.h>
-#include <sprockit/factory.h>
-#include <sprockit/debug.h>
-#include <sprockit/errors.h>
-#include <sprockit/statics.h>
-#include <sprockit/keyword_registration.h>
-#include <sprockit/util.h>
+#include <sst/core/params.h>
+#include <sst/elements/mercury/common/factory.h>
+//#include <sprockit/debug.h>
+#include <sst/elements/mercury/common/errors.h>
+//#include <sprockit/statics.h>
+//#include <sprockit/keyword_registration.h>
+#include <sst/elements/mercury/common/util.h>
 #include <stdint.h>
 
-RegisterNamespaces("traffic_matrix", "num_messages");
-RegisterKeywords(
-{ "smp_single_copy_size", "the minimum size of message for single-copy protocol" },
-{ "max_eager_msg_size", "the maximum size for using eager pt2pt protocol" },
-{ "max_vshort_msg_size", "the maximum size for mailbox protocol" },
-);
+//RegisterNamespaces("traffic_matrix", "num_messages");
+//RegisterKeywords(
+//{ "smp_single_copy_size", "the minimum size of message for single-copy protocol" },
+//{ "max_eager_msg_size", "the maximum size for using eager pt2pt protocol" },
+//{ "max_vshort_msg_size", "the maximum size for mailbox protocol" },
+//);
 
-DeclareDebugSlot(mpi_all_sends);
-RegisterDebugSlot(mpi_all_sends);
+//DeclareDebugSlot(mpi_all_sends);
+//RegisterDebugSlot(mpi_all_sends);
 
 using namespace std::placeholders;
 
-namespace sumi {
+namespace SST::MPI {
 
-static sprockit::NeedDeletestatics<MpiQueue> del_statics;
+//static sprockit::NeedDeletestatics<MpiQueue> del_statics;
 
 bool
 MpiQueue::sortbyseqnum::operator()(MpiMessage* a, MpiMessage*b) const
@@ -139,12 +139,12 @@ MpiQueue::init()
   }
 
   if (cmsg->tag() != 0){
-    spkt_abort_printf("got bad collective done message in mpi_queue::init");
+    sst_hg_abort_printf("got bad collective done message in mpi_queue::init");
   }
   delete cmsg;
 
   if (!init.all_equal){
-    spkt_abort_printf("MPI_Init: procs did not agree on completion queue ids");
+    sst_hg_abort_printf("MPI_Init: procs did not agree on completion queue ids");
   }
 }
 
@@ -153,7 +153,7 @@ MpiQueue::deleteStatics()
 {
 }
 
-sstmac::Timestamp
+SST::Hg::Timestamp
 MpiQueue::now() const {
   return api_->now();
 }

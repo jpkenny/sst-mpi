@@ -42,16 +42,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_RECVREQUEST_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_RECVREQUEST_H_INCLUDED
+#include <mpi_request_fwd.h>
+#include <mpi_queue/mpi_queue_fwd.h>
+#include <mpi_message.h>
+#include <sst/elements/mercury/common/event_location.h>
 
-#include <sumi-mpi/mpi_request_fwd.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_fwd.h>
-#include <sumi-mpi/mpi_message.h>
-#include <sstmac/common/event_location.h>
+#pragma once
 
-namespace sumi {
-
+namespace SST::MPI {
 
 /**
  * A nested type to handle individual mpi receive requests.
@@ -109,5 +107,3 @@ class MpiQueueRecvRequest  {
 };
 
 }
-
-#endif

@@ -42,15 +42,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef sumi_mpi_Call_ID_MPI_H
-#define sumi_mpi_Call_ID_MPI_H
+#pragma once
 
-#include <sumi-mpi/mpi_types.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_api_fwd.h>
-#include <sstmac/common/timestamp.h>
+#include <mpi_types.h>
+#include <mpi_integers.h>
+#include <mpi_api_fwd.h>
+#include <sst/elements/mercury/common/timestamp.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 typedef enum {
   Call_ID_MPI_Send=0,                    Call_ID_MPI_Recv,
@@ -193,5 +192,3 @@ struct MPI_Call {
 };
 
 }
-
-#endif // Call_ID_MPI_H

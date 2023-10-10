@@ -42,9 +42,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/otf2_output_stat.h>
-#include <sstmac/software/process/operating_system.h>
+#include <mpi_api.h>
+//#include <sumi-mpi/otf2_output_stat.h>
+#include <sst/elements/mercury/components/operating_system.h>
 #include <climits>
 
 namespace sstmac {
@@ -53,9 +53,7 @@ extern void apiLock();
 extern void apiUnlock();
 } }
 
-namespace sumi {
-
-
+namespace SST::MPI {
 
 struct float_int_t {
   float value;

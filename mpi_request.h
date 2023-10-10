@@ -42,16 +42,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIREQUEST_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIREQUEST_H_INCLUDED
+#include <sst/elements/iris/sumi/collective.h>
+#include <mpi_status.h>
+#include <mpi_message.h>
+#include <mpi_comm/mpi_comm_fwd.h>
+//#include <sstmac/common/sstmac_config.h>
 
-#include <sumi/collective.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_message.h>
-#include <sumi-mpi/mpi_comm/mpi_comm_fwd.h>
-#include <sstmac/common/sstmac_config.h>
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 /**
  * Persistent send operations (send, bsend, rsend, ssend)
@@ -261,5 +260,3 @@ class MpiRequest :
 };
 
 }
-
-#endif

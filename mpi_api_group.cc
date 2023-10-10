@@ -42,10 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sstmac/software/process/operating_system.h>
+#include <mpi_api.h>
+#include <sst/elements/mercury/components/operating_system.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 int
 MpiApi::groupRangeIncl(MPI_Group oldgrp, int n, int ranges[][3], MPI_Group* newgrp)
@@ -58,7 +58,7 @@ MpiApi::groupRangeIncl(MPI_Group oldgrp, int n, int ranges[][3], MPI_Group* newg
     int rank = start;
     if (stride < 0){ //stride can be negativve
       if (start < stop){
-        spkt_abort_printf("MPI_group_range_incl: negative stride, but start < stop");
+        sst_hg_abort_printf("MPI_group_range_incl: negative stride, but start < stop");
       }
       while (rank >= stop){
         new_ranks.push_back(rank);
@@ -66,7 +66,7 @@ MpiApi::groupRangeIncl(MPI_Group oldgrp, int n, int ranges[][3], MPI_Group* newg
       }
     } else {
       if (stop < start){
-        spkt_abort_printf("MPI_group_range_incl: positive stride, but stop < start");
+        sst_hg_abort_printf("MPI_group_range_incl: positive stride, but stop < start");
       }
       while (rank <= stop){
         new_ranks.push_back(rank);
@@ -83,7 +83,7 @@ MpiApi::groupIncl(MPI_Group oldgrp, int num_ranks, const int *ranks, MPI_Group *
 {
   MpiGroup* oldgrpPtr = getGroup(oldgrp);
   if (num_ranks > oldgrpPtr->size()) {
-    spkt_abort_printf("MPI_Group_incl: invalid group size %d", num_ranks);
+    sst_hg_abort_printf("MPI_Group_incl: invalid group size %d", num_ranks);
   }
 
   std::vector<TaskId> vec_ranks(num_ranks, TaskId(0));

@@ -42,13 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef MPI_COMM_FWD_H
-#define MPI_COMM_FWD_H
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 class MpiComm;
 
 }
-
-#endif // MPI_COMM_FWD_H

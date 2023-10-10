@@ -42,17 +42,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request.h>
-#include <sstmac/software/process/backtrace.h>
-#include <sstmac/null_buffer.h>
-#include <sprockit/sim_parameters.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue.h>
+#include <mpi_queue/mpi_queue_recv_request.h>
+//#include <sst/elements/mercury/operating_system/process/backtrace.h>
+#include <sst/elements/mercury/common/null_buffer.h>
+#include <sst/core/params.h>
 
 #include <unusedvariablemacro.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 Eager0::Eager0(SST::Params &params, MpiQueue *queue) :
   MpiProtocol(params, queue)

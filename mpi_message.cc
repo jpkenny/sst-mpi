@@ -42,18 +42,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_message.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sprockit/debug.h>
-#include <sprockit/errors.h>
+#include <mpi_message.h>
+#include <mpi_status.h>
+#include <mpi_protocol/mpi_protocol.h>
+//#include <sprockit/debug.h>
+#include <sst/elements/mercury/common/errors.h>
 
 #include <stdlib.h>
 #include <sstream>
 
 #define enumcase(x) case x: return #x
 
-namespace sumi {
+namespace SST::MPI {
 
 void
 MpiMessage::serialize_order(sstmac::serializer& ser)

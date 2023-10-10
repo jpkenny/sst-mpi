@@ -42,16 +42,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request.h>
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_debug.h>
-#include <sstmac/software/process/backtrace.h>
-#include <sprockit/sim_parameters.h>
-#include <sstmac/null_buffer.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <mpi_queue/mpi_queue.h>
+#include <mpi_queue/mpi_queue_recv_request.h>
+#include <mpi_api.h>
+#include <mpi_debug.h>
+//#include <sst/elements/mercury/operating_system/process/backtrace.h>
+#include <sst/core/params.h>
+#include <sst/elements/mercury/common/null_buffer.h>
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 RendezvousProtocol::RendezvousProtocol(SST::Params& params, MpiQueue* queue) :
   MpiProtocol(params, queue)

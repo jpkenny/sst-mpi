@@ -42,18 +42,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
-#include <sstmac/software/process/ftq_scope.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
+//#include <sstmac/software/process/ftq_scope.h>
 
 #define start_probe_call(fxn,comm,src,tag) \
   StartMPICall(fxn); \
   mpi_api_debug(sprockit::dbg::mpi, "%s(%s,%s,%s)", \
     #fxn, srcStr(source).c_str(), tagStr(tag).c_str(), commStr(comm).c_str());
 
-namespace sumi {
+namespace SST::MPI {
 
 int
 MpiApi::probe(int source, int tag, MPI_Comm comm, MPI_Status *status)

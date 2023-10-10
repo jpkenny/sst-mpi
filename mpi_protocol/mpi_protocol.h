@@ -42,18 +42,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef sstmac_software_libraries_mpi_MPIPROTOCOL_H
-#define sstmac_software_libraries_mpi_MPIPROTOCOL_H
+#include <mpi_queue/mpi_queue_fwd.h>
+#include <mpi_api_fwd.h>
+#include <mpi_queue/mpi_queue_recv_request_fwd.h>
+#include <mpi_request_fwd.h>
+#include <mpi_message.h>
+#include <sst/core/params.h>
+#include <sst/elements/mercury/common/timestamp.h>
 
-#include <sumi-mpi/mpi_queue/mpi_queue_fwd.h>
-#include <sumi-mpi/mpi_api_fwd.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request_fwd.h>
-#include <sumi-mpi/mpi_request_fwd.h>
-#include <sumi-mpi/mpi_message.h>
-#include <sprockit/sim_parameters_fwd.h>
-#include <sstmac/common/timestamp.h>
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 /**
  * @brief The mpi_protocol class
@@ -178,11 +177,11 @@ class RendezvousProtocol : public MpiProtocol
   int header_qos_;
   int rdma_get_qos_;
   int ack_qos_;
-  sstmac::Timestamp lastQuiesce_;
-  sstmac::Timestamp minPartnerQuiesce_;
+  SST::Hg::Timestamp lastQuiesce_;
+  SST::Hg::Timestamp minPartnerQuiesce_;
 
-  sstmac::TimeDelta sync_byte_delay_catch_up_cutoff_;
-  sstmac::TimeDelta quiesce_byte_delay_catch_up_cutoff_;
+  SST::Hg::TimeDelta sync_byte_delay_catch_up_cutoff_;
+  SST::Hg::TimeDelta quiesce_byte_delay_catch_up_cutoff_;
   int catch_up_qos_;
 
   void newOutstanding();
@@ -275,5 +274,3 @@ class DirectPut final : public MpiProtocol
 };
 
 }
-
-#endif // MPIPROTOCOL_H

@@ -42,25 +42,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIMESSAGE_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIMESSAGE_H_INCLUDED
+//#include <sstmac/common/sstmac_config.h>
+#include <mpi_status.h>
+#include <mpi_types/mpi_type.h>
+#include <mpi_integers.h>
+#include <sst/elements/mercury/common/timestamp.h>
+#include <sst/elements/mercury/operating_system/process/task_id.h>
+#include <sst/elements/mercury/operating_system/process/app_id.h>
 
-#include <sstmac/common/sstmac_config.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_types/mpi_type.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sstmac/software/process/task_id.h>
-#include <sstmac/software/process/app_id.h>
+#include <sst/elements/mercury/components/operating_system_fwd.h>
+#include <sst/elements/iris/sumi/message.h>
+#include <sst/elements/mercury/common/thread_safe_new.h>
+#include <sst/elements/mercury/hardware/network/network_message.h>
 
-#include <sstmac/software/process/operating_system_fwd.h>
-#include <sumi/message.h>
-#include <sprockit/thread_safe_new.h>
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 class MpiMessage final :
-  public sumi::ProtocolMessage,
-  public sprockit::thread_safe_new<MpiMessage>
+  public SST::Iris::sumi::ProtocolMessage,
+  public SST::Hg::thread_safe_new<MpiMessage>
 {
   ImplementSerializable(MpiMessage)
 
@@ -86,22 +87,18 @@ class MpiMessage final :
 
   ~MpiMessage() throw () override;
 
-  sumi::MpiMessage* clone_me() const {
+  SST::MPI::MpiMessage* clone_me() const {
     MpiMessage* cln = new MpiMessage(*this);
     return cln;
   }
 
-  sstmac::hw::NetworkMessage* cloneInjectionAck() const override {
+  SST::Hg::NetworkMessage* cloneInjectionAck() const override {
     auto* msg = clone_me();
     msg->convertToAck();
     return msg;
   }
 
   void serialize_order(sstmac::serializer& ser) override;
-
-#if !SSTMAC_INTEGRATED_SST_CORE
-  void validate_serialization(serializable* ser) override;
-#endif
 
   MPI_Datatype type() const {
     return type_;
@@ -127,11 +124,11 @@ class MpiMessage final :
     return dst_rank_;
   }
 
-  void setMinQuiesce(sstmac::Timestamp ticks){
+  void setMinQuiesce(SST::Hg::Timestamp ticks){
     min_quiesce_ = ticks;
   }
 
-  sstmac::Timestamp minQuiesce() const {
+  SST::Hg::Timestamp minQuiesce() const {
     return min_quiesce_;
   }
 
@@ -146,10 +143,8 @@ class MpiMessage final :
   int tag_;
   MPI_Comm commid_;
   int seqnum_;
-  sstmac::Timestamp min_quiesce_;
+  SST::Hg::Timestamp min_quiesce_;
 
 };
 
 }
-
-#endif

@@ -42,13 +42,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_KEYVAL_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_KEYVAL_H_INCLUDED
+#pragma once
 
-#include <sumi-mpi/mpi_integers.h>
+#include <mpi_integers.h>
 #include <string>
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 class keyval  {
 
@@ -83,5 +84,3 @@ class keyval  {
 };
 
 }
-
-#endif /* KEYVAL_H_ */

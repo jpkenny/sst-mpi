@@ -42,8 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPISTATUS_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPISTATUS_H_INCLUDED
+#pragma once
 
 #ifdef __cplusplus
 struct MPI_Status {
@@ -59,6 +58,4 @@ typedef struct {
 };
 #else
 } MPI_Status;
-#endif
-
 #endif

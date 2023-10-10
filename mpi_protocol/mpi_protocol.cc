@@ -42,13 +42,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request.h>
-#include <sprockit/sim_parameters.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <mpi_queue/mpi_queue.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue_recv_request.h>
+#include <sst/core/params.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiProtocol::MpiProtocol(SST::Params&  /*params*/, MpiQueue *queue) :
   queue_(queue), mpi_(queue_->api())
@@ -153,6 +153,5 @@ DirectPut::incomingPayload(MpiMessage* msg)
   if (req) incoming(msg, req);
 
 }
-
 
 }

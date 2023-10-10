@@ -42,12 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
-#include <sumi-mpi/otf2_output_stat.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
-#include <sstmac/software/process/ftq_scope.h>
+#include <mpi_api.h>
+#include <mpi_queue/mpi_queue.h>
+//#include <sumi-mpi/otf2_output_stat.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
+//#include <sstmac/software/process/ftq_scope.h>
 
 #define start_pt2pt_call(fxn, count, type, partner, tag, comm) \
   StartMPICall(fxn); \
@@ -59,8 +59,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #define start_Ipt2pt_call(fxn,count,type,partner,tag,comm,reqPtr) \
   StartMPICall(fxn)
 
-
-namespace sumi {
+namespace SST::MPI {
 
 static struct MPI_Status proc_null_status = {
   MPI_PROC_NULL, MPI_ANY_TAG, 0, 0, 0

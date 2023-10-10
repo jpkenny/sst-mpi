@@ -42,14 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_PROBEREQUEST_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_PROBEREQUEST_H_INCLUDED
+#include <mpi_request_fwd.h>
+#include <mpi_message.h>
 
-#include <sumi-mpi/mpi_request_fwd.h>
-#include <sumi-mpi/mpi_message.h>
+#pragma once
 
-namespace sumi {
-
+namespace SST::MPI {
 
 /**
  * Nested type to handle individual probe requests.
@@ -73,5 +71,3 @@ class mpi_queue_probe_request  {
 };
 
 }
-
-#endif

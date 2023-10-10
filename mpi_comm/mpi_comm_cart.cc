@@ -42,9 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_comm/mpi_comm_cart.h>
+#include <mpi_comm/mpi_comm_cart.h>
+#include <sst/elements/mercury/common/errors.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiCommCart::MpiCommCart(
   MPI_Comm id,
@@ -91,7 +92,7 @@ MpiCommCart::shift(int dir, int dis)
 {
 
   if (dir >= (int) dims_.size()) {
-    spkt_throw_printf(sprockit::SpktError,
+    sst_hg_throw_printf(SST::Hg::HgError,
                      "mpicomm_cart::shift: dir %d is too big for dims %d",
                      dir, dims_.size());
   }

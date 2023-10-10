@@ -42,8 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_MPI_INTEGERS_H
-#define SSTMAC_MPI_INTEGERS_H
+#pragma once
 
 #ifdef __cplusplus
 #include <cstdint>
@@ -219,5 +218,3 @@ enum builtin_attrs {
 
 typedef int (MPI_Copy_function)(MPI_Comm, int, void*, void*, void*, int*);
 typedef int (MPI_Delete_function)(MPI_Comm, int, void*, void*);
-
-#endif // SSTMAC_MPI_INTEGERS_H

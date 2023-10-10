@@ -42,8 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef sumi_mpi_MPITYPES_H_IN
-#define sumi_mpi_MPITYPES_H_IN
+#pragma once
 
 #ifdef __cpluscplus
 #include <cstdint>
@@ -53,8 +52,8 @@ Questions? Contact sst-macro-help@sandia.gov
 
 typedef uintptr_t MPI_Aint;
 
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_status.h>
+#include <mpi_integers.h>
+#include <mpi_status.h>
 
 // useful flags
 #define MPI_PROC_NULL   (-1)
@@ -191,5 +190,3 @@ typedef int (MPI_Grequest_query_function)(void *, MPI_Status *);
 #define MPI_TYPECLASS_REAL 1
 #define MPI_TYPECLASS_INTEGER 2
 #define MPI_TYPECLASS_COMPLEX 3
-
-#endif // MPITYPES_H_IN

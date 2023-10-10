@@ -42,17 +42,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPIGROUP_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPIGROUP_H_INCLUDED
+#pragma once
 
-#include <sstmac/software/process/task_id.h>
-#include <sumi-mpi/mpi_integers.h>
+#include <sst/elements/mercury/operating_system/process/task_id.h>
+#include <mpi_integers.h>
 #include <vector>
 #include <cstring>
 
-namespace sumi {
+namespace SST::MPI {
 
-using sstmac::sw::TaskId;
+using SST::Hg::TaskId;
 
 class MpiGroup  {
 
@@ -106,5 +105,3 @@ class MpiGroup  {
 };
 
 }
-
-#endif

@@ -42,13 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef MPI_QUEUE_PROBE_REQUEST_FWD_H
-#define MPI_QUEUE_PROBE_REQUEST_FWD_H
+#pragma once
 
 namespace sumi {
 
 class mpi_queue_probe_request;
 
 }
-
-#endif // MPI_QUEUE_PROBE_REQUEST_FWD_H

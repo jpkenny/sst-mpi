@@ -41,10 +41,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Questions? Contact sst-macro-help@sandia.gov
 */
-#ifndef sumi_mpi_otf2_output_stat
-#define sumi_mpi_otf2_output_stat
 
-#include <sstmac/common/sstmac_config.h>
+#pragma once
+
+//#include <sstmac/common/sstmac_config.h>
 
 #ifdef SSTMAC_OTF2_ENABLED
 
@@ -53,7 +53,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sumi-mpi/mpi_comm/mpi_comm_fwd.h>
 #include <sumi-mpi/mpi_api_fwd.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 class OTF2Writer : public SST::Statistics::CustomStatistic
 {
@@ -126,7 +126,5 @@ class OTF2Output : public sstmac::StatisticOutput
 };
 
 }
-
-#endif
 
 #endif

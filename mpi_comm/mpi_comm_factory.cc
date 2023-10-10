@@ -42,14 +42,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_comm/mpi_comm_factory.h>
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
-#include <sumi-mpi/mpi_comm/mpi_comm_cart.h>
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_types.h>
-#include <sprockit/errors.h>
-#include <sprockit/stl_string.h>
+#include <mpi_comm/mpi_comm_factory.h>
+#include <mpi_comm/mpi_comm.h>
+#include <mpi_comm/mpi_comm_cart.h>
+#include <mpi_comm/mpi_group.h>
+#include <mpi_api.h>
+#include <mpi_integers.h>
+#include <mpi_types.h>
+#include <sst/elements/mercury/common/errors.h>
+#include <sst/elements/mercury/common/stl_string.h>
 
 #include <unusedvariablemacro.h>
 
@@ -64,15 +65,12 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <stdint.h>
 #include <iterator>
 
-namespace sstmac {
-namespace sw {
+namespace SST::Hg {
 void apiLock();
 void apiUnlock();
 }
-}
 
-namespace sumi {
-
+namespace SST::MPI {
 
 //
 // Build comm_world using information retrieved from the environment.
@@ -341,6 +339,5 @@ MpiCommFactory::createCart(MpiComm* caller, int ndims,
     return MpiComm::comm_null;
   }
 }
-
 
 }

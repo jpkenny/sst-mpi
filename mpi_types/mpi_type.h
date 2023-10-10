@@ -42,12 +42,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_TYPES_MPITYPE_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_TYPES_MPITYPE_H_INCLUDED
-
-#include <sumi/comm_functions.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_types.h>
+#include <sst/elements/iris/sumi/comm_functions.h>
+#include <mpi_integers.h>
+#include <mpi_types.h>
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -56,8 +53,9 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <map>
 #include <memory>
 
-namespace sumi {
+#pragma once
 
+namespace SST::MPI {
 
 struct pairdata;
 struct vecdata;
@@ -324,5 +322,3 @@ std::ostream&
 operator<<(std::ostream &os, MpiType* type);
 
 }
-
-#endif

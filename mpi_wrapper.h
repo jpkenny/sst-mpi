@@ -42,9 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef sstmac_mpi_wrapper_H
-#define sstmac_mpi_wrapper_H
+#pragma once
 
-#include <sumi-mpi/sstmac_mpi.h>
-
-#endif // MPI_H
+#include <sst_mpi.h>

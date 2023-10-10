@@ -63,7 +63,7 @@ m4_define([SSTMPI_ACVERSION_TAG],
 AC_INIT([SST MPI],[SSTMPI_ACVERSION_TAG],[wg-sstp@sandia.gov])
 AC_CONFIG_MACRO_DIR([acinclude])
 AC_CONFIG_AUX_DIR(bin)
-AX_PREFIX_CONFIG_H(sst_mpi_config.h, SSTMPI)
+#AX_PREFIX_CONFIG_H(sst_mpi_config.h, SSTMPI)
 AC_CANONICAL_TARGET
 
 # Construct the libtool version
@@ -161,7 +161,7 @@ if test "X$have_elements" = "Xyes"; then
   CPPFLAGS="$CPPFLAGS $SST_ELEMENTS_CPPFLAGS $SST_CPPFLAGS"
   CXXFLAGS="$CXXFLAGS $SST_CXXFLAGS"
 
-  AC_CHECK_HEADERS([sst/elements/memHierarchy/memHierarchyInterface.h], [],
+  AC_CHECK_HEADERS([sst/elements/memHierarchy/memEventBase.h], [],
       [AC_MSG_ERROR([Could not locate SST element header files at $SST_ELEMENTS])])
 
   AC_SUBST(SST_ELEMENTS_CPPFLAGS)

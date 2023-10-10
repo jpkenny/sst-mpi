@@ -41,14 +41,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Questions? Contact sst-macro-help@sandia.gov
 */
-#ifndef sumi_mpi_otf2_output_stat_fwd
-#define sumi_mpi_otf2_output_stat_fwd
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 class OTF2Writer;
 
 }
-
-#endif
 

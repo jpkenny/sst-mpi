@@ -44,4 +44,8 @@ Questions? Contact sst-macro-help@sandia.gov
 
 #pragma once
 
-struct MPI_Status;
+#if __cplusplus >= 201703L
+  #define SST_MPI_MAYBE_UNUSED [[maybe_unused]]
+#else
+  #define SST_MPI_MAYBE_UNUSED __attribute__((unused))
+#endif

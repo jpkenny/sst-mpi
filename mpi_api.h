@@ -42,43 +42,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIAPI_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPIAPI_H_INCLUDED
+#include <sst/elements/mercury/operating_system/libraries/library.h>
+#include <sst/elements/mercury/operating_system/libraries/api.h>
 
-#include <sstmac/software/libraries/library.h>
-#include <sstmac/software/api/api.h>
+//#include <sstmac/common/stats/ftq_tag.h>
 
-#include <sstmac/common/stats/ftq_tag.h>
+#include <sst/elements/iris/sumi/message_fwd.h>
 
-#include <sumi/message_fwd.h>
+#include <mpi_types.h>
+#include <mpi_integers.h>
+#include <mpi_comm/mpi_comm.h>
+#include <mpi_types/mpi_type_fwd.h>
 
-#include <sumi-mpi/mpi_types.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
-#include <sumi-mpi/mpi_types/mpi_type_fwd.h>
+#include <mpi_request.h>
+#include <mpi_status.h>
+#include <mpi_call.h>
+#include <mpi_comm/mpi_comm_factory.h>
+#include <mpi_debug.h>
+#include <mpi_queue/mpi_queue_fwd.h>
+#include <mpi_delay_stats.h>
 
-#include <sumi-mpi/mpi_request.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_call.h>
-#include <sumi-mpi/mpi_comm/mpi_comm_factory.h>
-#include <sumi-mpi/mpi_debug.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_fwd.h>
-#include <sumi-mpi/mpi_delay_stats.h>
+#include <sst/elements/mercury/operating_system/process/software_id.h>
+//#include <sstmac/software/process/backtrace.h>
+#include <sst/elements/mercury/components/operating_system_fwd.h>
+//#include <sstmac/common/stats/stat_spyplot_fwd.h>
 
-#include <sstmac/software/process/software_id.h>
-#include <sstmac/software/process/backtrace.h>
-#include <sstmac/software/process/operating_system_fwd.h>
-#include <sstmac/common/stats/stat_spyplot_fwd.h>
-
-#include <sprockit/sim_parameters_fwd.h>
+#include <sst/core/params.h>
 #include <unordered_map>
-#include <sprockit/factory.h>
+#include <sst/elements/mercury/common/factory.h>
 
-#include <sumi/sim_transport.h>
+#include <sst/elements/iris/sumi/sim_transport.h>
 
-#include <sumi-mpi/otf2_output_stat_fwd.h>
+//#include <sumi-mpi/otf2_output_stat_fwd.h>
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 class MpiApi : public sumi::SimTransport
 {
@@ -916,6 +915,3 @@ MpiApi* sstmac_mpi();
 
 #define mpi_api_cond_debug(flags, cond, ...) \
   mpi_cond_debug(commWorld()->rank(), flags, cond, __VA_ARGS__)
-
-
-#endif

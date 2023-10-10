@@ -42,18 +42,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sstmac/common/sstmac_config.h>
-#include <sprockit/errors.h>
-#include <sprockit/statics.h>
-#include <sumi-mpi/mpi_types/mpi_type.h>
-#include <sumi-mpi/mpi_types.h>
+//#include <sstmac/common/sstmac_config.h>
+#include <sst/elements/mercury/common/errors.h>
+//#include <sprockit/statics.h>
+#include <mpi_types/mpi_type.h>
+#include <mpi_types.h>
 #include <iostream>
 #include <sstream>
 #include <cstring>
 
-sprockit::NeedDeletestatics<sumi::MpiType> delete_static_types;
+//sprockit::NeedDeletestatics<sumi::MpiType> delete_static_types;
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiType::MpiType() :
   id(-1),

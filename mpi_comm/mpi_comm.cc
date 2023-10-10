@@ -42,15 +42,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
-#include <sumi-mpi/mpi_comm/keyval.h>
-#include <sprockit/debug.h>
-#include <sprockit/errors.h>
-#include <sprockit/statics.h>
+#include <mpi_comm/mpi_comm.h>
+#include <mpi_comm/keyval.h>
+//#include <sprockit/debug.h>
+#include <sst/elements/mercury/common/errors.h>
+//#include <sprockit/statics.h>
 
-static sprockit::NeedDeletestatics<sumi::MpiComm> cleanup_comm;
+//static sprockit::NeedDeletestatics<sumi::MpiComm> cleanup_comm;
 
-namespace sumi {
+namespace SST::MPI {
 
 MpiComm* MpiComm::comm_null = nullptr;
 

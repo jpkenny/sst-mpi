@@ -42,13 +42,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_queue/mpi_queue_probe_request.h>
-#include <sumi-mpi/mpi_request.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sprockit/errors.h>
+#include <mpi_queue/mpi_queue_probe_request.h>
+#include <mpi_request.h>
+#include <mpi_status.h>
+#include <sst/elements/mercury/common/errors.h>
 
-namespace sumi {
-
+namespace SST::MPI {
 
 //
 // Hi there.

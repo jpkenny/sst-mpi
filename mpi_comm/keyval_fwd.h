@@ -42,13 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef KEYVAL_FWD_H
-#define KEYVAL_FWD_H
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
 class keyval;
 
 }
-
-#endif // KEYVAL_FWD_H

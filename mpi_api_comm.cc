@@ -42,19 +42,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_comm/mpi_comm_cart.h>
-#include <sumi-mpi/otf2_output_stat.h>
-#include <sprockit/stl_string.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
-#include <sstmac/software/process/ftq_scope.h>
+#include <mpi_api.h>
+#include <mpi_comm/mpi_comm_cart.h>
+//#include <sumi-mpi/otf2_output_stat.h>
+#include <sst/elements/mercury/common/stl_string.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
+//#include <sstmac/software/process/ftq_scope.h>
 
 #define StartCommCall(fxn,comm) \
   StartMPICall(fxn); \
   mpi_api_debug(sprockit::dbg::mpi, "%s(%s) start", #fxn, commStr(comm).c_str())
 
-namespace sumi {
+namespace SST::MPI {
 
 int
 MpiApi::commDup(MPI_Comm input, MPI_Comm *output)

@@ -50,28 +50,28 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <iomanip>
 #include <ctime>
 
-#include <sstmac/common/runtime.h>
+#include <sst/elements/mercury/common/runtime.h>
 
-#include <sumi-mpi/mpi_queue/mpi_queue.h>
+#include <mpi_queue/mpi_queue.h>
 
-#include <sumi-mpi/mpi_api.h>
-#include <sumi-mpi/mpi_status.h>
-#include <sumi-mpi/mpi_request.h>
+#include <mpi_api.h>
+#include <mpi_status.h>
+#include <mpi_request.h>
 
-#include <sstmac/hardware/node/node.h>
+#include <sst/elements/mercury/components/node.h>
 
-#include <sstmac/software/process/backtrace.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/thread.h>
-#include <sstmac/software/process/app.h>
-#include <sstmac/software/process/operating_system.h>
-#include <sstmac/software/process/ftq_scope.h>
-#include <sstmac/software/launch/job_launcher.h>
+//#include <sstmac/software/process/backtrace.h>
+#include <sst/elements/mercury/components/operating_system.h>
+#include <sst/elements/mercury/operating_system/process/thread.h>
+#include <sst/elements/mercury/operating_system/process/app.h>
+#include <sst/elements/mercury/components/operating_system.h>
+//#include <sstmac/software/process/ftq_scope.h>
+#include <sst/elements/mercury/operating_system/launch/job_launcher.h>
 
 
-#include <sumi-mpi/mpi_protocol/mpi_protocol.h>
-#include <sumi-mpi/mpi_comm/mpi_comm_factory.h>
-#include <sumi-mpi/mpi_types.h>
+#include <mpi_protocol/mpi_protocol.h>
+#include <mpi_comm/mpi_comm_factory.h>
+#include <mpi_types.h>
 
 #include <unusedvariablemacro.h>
 
@@ -102,7 +102,7 @@ RegisterKeywords(
 sprockit::StaticNamespaceRegister mpi_ns_reg("mpi");
 sprockit::StaticNamespaceRegister queue_ns_reg("queue");
 
-namespace sumi {
+namespace SST::MPI {
 
 static sprockit::NeedDeletestatics<MpiApi> del_statics;
 sstmac::FTQTag MpiApi::mpi_tag("MPI", 1);

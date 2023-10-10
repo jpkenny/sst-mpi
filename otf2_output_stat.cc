@@ -53,8 +53,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sstmac/common/timestamp.h>
 #include <limits>
 
-
-namespace sumi {
+namespace SST::MPI {
 
 OTF2Writer::OTF2Writer(SST::BaseComponent* parent, const std::string& name,
                        const std::string& subName, SST::Params& params) :

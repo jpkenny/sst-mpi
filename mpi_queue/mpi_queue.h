@@ -42,35 +42,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_QUEUE_MPIQUEUE_H_INCLUDED
+#include <mpi_message.h>
+#include <mpi_request.h>
+#include <mpi_comm/mpi_comm.h>
+#include <mpi_types/mpi_type.h>
 
+#include <sst/elements/mercury/operating_system/process/progress_queue.h>
+//#include <sst/elements/mercury/common/event_scheduler_fwd.h>
 
-#include <sumi-mpi/mpi_message.h>
-#include <sumi-mpi/mpi_request.h>
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
-#include <sumi-mpi/mpi_types/mpi_type.h>
+#include <sst/elements/mercury/common/factory.h>
 
-#include <sstmac/software/process/progress_queue.h>
-#include <sstmac/common/event_scheduler_fwd.h>
+//#include <sst/elements/mercury/common/event_manager_fwd.h>
 
-#include <sprockit/factory.h>
+#include <mpi_api_fwd.h>
+#include <mpi_status_fwd.h>
+#include <mpi_protocol/mpi_protocol_fwd.h>
 
-#include <sstmac/common/event_manager_fwd.h>
+#include <mpi_queue/mpi_queue_recv_request_fwd.h>
+#include <mpi_queue/mpi_queue_probe_request_fwd.h>
 
-#include <sumi-mpi/mpi_api_fwd.h>
-#include <sumi-mpi/mpi_status_fwd.h>
-#include <sumi-mpi/mpi_protocol/mpi_protocol_fwd.h>
-
-#include <sumi-mpi/mpi_queue/mpi_queue_recv_request_fwd.h>
-#include <sumi-mpi/mpi_queue/mpi_queue_probe_request_fwd.h>
-
-#include <sprockit/sim_parameters_fwd.h>
+#include <sst/core/params.h>
 
 #include <queue>
-#include <sstmac/common/timestamp.h>
+#include <sst/elements/mercury/common/timestamp.h>
 
-namespace sumi {
+#pragma once
+
+namespace SST::MPI {
 
 class MpiQueue
 {
@@ -83,7 +81,7 @@ class MpiQueue
   friend class DirectPut;
   friend class MpiQueueRecvRequest;
 
-  using progress_queue = sstmac::sw::MultiProgressQueue<Message>;
+  using progress_queue = SST::Hg::MultiProgressQueue<SST::MPI::Message>;
 
  public:
   MpiQueue(SST::Params& params, int TaskId,
@@ -160,7 +158,7 @@ class MpiQueue
    * @brief incoming_pt2pt_message Message might be held up due to sequencing constraints
    * @param msg
    */
-  void incomingPt2ptMessage(sumi::Message* msg);
+  void incomingPt2ptMessage(SST::Hg::Message* msg);
 
   /**
    * @brief handle_pt2pt_message Message is guaranteed to satisfy sequencing constraints

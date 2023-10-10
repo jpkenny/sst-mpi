@@ -42,14 +42,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMM_CART_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMM_CART_H_INCLUDED
+#include <mpi_comm/mpi_comm.h>
 
-#include <sumi-mpi/mpi_comm/mpi_comm.h>
+#pragma once
 
-namespace sumi {
+namespace SST::MPI {
 
-using sstmac::sw::AppId;
+using SST::Hg::AppId;
 
 class MpiCommCart : public MpiComm
 {
@@ -97,4 +96,3 @@ class MpiCommCart : public MpiComm
 };
 
 }
-#endif

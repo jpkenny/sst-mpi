@@ -42,33 +42,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#ifndef SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMM_H_INCLUDED
-#define SSTMAC_SOFTWARE_LIBRARIES_MPI_MPI_COMM_MPICOMM_H_INCLUDED
-
-#include <sumi/communicator.h>
-#include <sstmac/common/node_address.h>
-#include <sstmac/software/process/task_id.h>
-#include <sstmac/software/process/app_id.h>
-#include <sstmac/software/process/software_id.h>
-#include <sumi-mpi/mpi_comm/keyval_fwd.h>
-#include <sumi-mpi/mpi_comm/mpi_group.h>
-#include <sumi-mpi/mpi_integers.h>
-#include <sumi-mpi/mpi_request_fwd.h>
+#include <sst/elements/iris/sumi/communicator.h>
+#include <sst/elements/mercury/common/node_address.h>
+#include <sst/elements/mercury/operating_system/process/task_id.h>
+#include <sst/elements/mercury/operating_system/process/app_id.h>
+#include <sst/elements/mercury/operating_system/process/software_id.h>
+#include <sst/elements/mercury/common/errors.h>
+#include <mpi_comm/keyval_fwd.h>
+#include <mpi_comm/mpi_group.h>
+#include <mpi_integers.h>
+#include <mpi_request_fwd.h>
 #include <unordered_map>
-#include <sprockit/errors.h>
 #include <string>
 #include <map>
 
-namespace sumi {
+#pragma once
 
-using sstmac::sw::AppId;
-using sstmac::sw::SoftwareId;
-using sstmac::NodeId;
+namespace SST::MPI {
+
+using SST::Hg::AppId;
+using SST::Hg::SoftwareId;
+using SST::Hg::NodeId;
 
 /**
  * An MPI communicator handle.
  */
-class MpiComm : public Communicator
+class MpiComm : public SST::Iris::sumi::Communicator
 {
  public:
   friend class MpiApi;
@@ -216,5 +215,3 @@ class MpiComm : public Communicator
 };
 
 }
-
-#endif

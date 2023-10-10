@@ -42,10 +42,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/mpi_comm/keyval.h>
-#include <sprockit/errors.h>
+#include <mpi_comm/keyval.h>
+#include <sst/elements/mercury/common/errors.h>
 
-namespace sumi {
+namespace SST::MPI {
 
 keyval*
 keyval::clone(int k) const {
