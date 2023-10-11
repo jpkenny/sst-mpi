@@ -50,14 +50,14 @@ namespace SST::MPI {
 int
 MpiApi::winFlush(int  /*rank*/, MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush");
   return MPI_SUCCESS;
 }
 
 int
 MpiApi::winFlushLocal(int  /*rank*/, MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush_local");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush_local");
   return MPI_SUCCESS;
 }
 
@@ -65,28 +65,28 @@ int
 MpiApi::winCreate(void * /*base*/, MPI_Aint  /*size*/, int  /*disp_unit*/, MPI_Info  /*info*/,
                MPI_Comm  /*comm*/, MPI_Win * /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush_local");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush_local");
   return MPI_SUCCESS;
 }
 
 int
 MpiApi::winFree(MPI_Win * /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush_local");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush_local");
   return MPI_SUCCESS;
 }
 
 int
 MpiApi::winLock(int  /*lock_type*/, int  /*rank*/, int  /*assert*/, MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush_local");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush_local");
   return MPI_SUCCESS;
 }
 
 int
 MpiApi::winUnlock(int  /*rank*/, MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Win_flush_local");
+  sst_hg_abort_printf("unimplemented error: MPI_Win_flush_local");
   return MPI_SUCCESS;
 }
 
@@ -95,7 +95,7 @@ MpiApi::get(void * /*origin_addr*/, int  /*origin_count*/, MPI_Datatype  /*origi
              int  /*target_rank*/, MPI_Aint  /*target_disp*/, int  /*target_count*/, MPI_Datatype  /*target_datatype*/,
              MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Get");
+  sst_hg_abort_printf("unimplemented error: MPI_Get");
   return MPI_SUCCESS;
 }
 
@@ -104,7 +104,7 @@ MpiApi::put(const void * /*origin_addr*/, int  /*origin_count*/, MPI_Datatype  /
              int  /*target_rank*/, MPI_Aint  /*target_disp*/, int  /*target_count*/, MPI_Datatype  /*target_datatype*/,
              MPI_Win  /*win*/)
 {
-  spkt_abort_printf("unimplemented error: MPI_Put");
+  sst_hg_abort_printf("unimplemented error: MPI_Put");
   return MPI_SUCCESS;
 }
 

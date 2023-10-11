@@ -54,8 +54,8 @@ namespace SST::MPI {
 bool
 MpiApi::test(MPI_Request *request, MPI_Status *status, int& tag, int& source)
 {
-  _StartMPICall_(MPI_Test);
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Test(...)");
+//  _StartMPICall_(MPI_Test);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Test(...)");
 
   if (*request == MPI_REQUEST_NULL){
     return true;
@@ -87,14 +87,14 @@ MpiApi::test(MPI_Request *request, int *flag, MPI_Status *status)
   auto start_clock = traceClock();
 #endif
   int tag, source;
-  _StartMPICall_(MPI_Test);
+  //_StartMPICall_(MPI_Test);
   if (test(request, status, tag, source)){
-    mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Test(...)");
+    //mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Test(...)");
     *flag = 1;
   } else {
     *flag = 0;
   }
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -119,7 +119,7 @@ MpiApi::testall(int count, MPI_Request array_of_requests[], int *flag, MPI_Statu
   std::vector<dumpi::OTF2_Writer::mpi_status_t> statuses(count);
 #endif
 
-  _StartMPICall_(MPI_Testall);
+  //_StartMPICall_(MPI_Testall);
   *flag = 1;
   bool ignore_status = array_of_statuses == MPI_STATUSES_IGNORE;
   for (int i=0; i < count; ++i){
@@ -135,10 +135,10 @@ MpiApi::testall(int count, MPI_Request array_of_requests[], int *flag, MPI_Statu
 #endif
   }
   if (*flag){
-    mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request,
-      "MPI_Testall(%d,...)", count);
+    //mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request,
+    //  "MPI_Testall(%d,...)", count);
   }
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -160,7 +160,7 @@ MpiApi::testany(int count, MPI_Request array_of_requests[], int *indx, int *flag
   dumpi::OTF2_Writer::mpi_status_t stat;
 #endif
 
-  startAPICall();
+  //startAPICall();
   if (count == 0){
     *flag = 1;
     return MPI_SUCCESS;
@@ -179,7 +179,7 @@ MpiApi::testany(int count, MPI_Request array_of_requests[], int *indx, int *flag
       break;
     }
   }
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -202,7 +202,7 @@ MpiApi::testsome(int incount, MPI_Request array_of_requests[], int *outcount,
   std::vector<dumpi::OTF2_Writer::mpi_status_t> statuses(incount);
 #endif
 
-  startAPICall();
+  //startAPICall();
   int numComplete = 0;
   bool ignore_status = array_of_statuses == MPI_STATUSES_IGNORE;
   for (int i=0; i < incount; ++i){
@@ -217,7 +217,7 @@ MpiApi::testsome(int incount, MPI_Request array_of_requests[], int *outcount,
     }
   }
   *outcount = numComplete;
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if(OTF2Writer_){

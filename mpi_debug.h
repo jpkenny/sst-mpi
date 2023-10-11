@@ -46,12 +46,12 @@ Questions? Contact sst-macro-help@sandia.gov
 
 //#include <sprockit/debug.h>
 
-DeclareDebugSlot(mpi)
-DeclareDebugSlot(mpi_request)
-DeclareDebugSlot(mpi_server)
-DeclareDebugSlot(mpi_queue)
-DeclareDebugSlot(mpi_pt2pt)
-DeclareDebugSlot(mpi_collective)
+//DeclareDebugSlot(mpi)
+//DeclareDebugSlot(mpi_request)
+//DeclareDebugSlot(mpi_server)
+//DeclareDebugSlot(mpi_queue)
+//DeclareDebugSlot(mpi_pt2pt)
+//DeclareDebugSlot(mpi_collective)
 
 // VA_ARGS[0] = format_str
 #define mpi_cond_debug(rank, flags, cond, ...) \

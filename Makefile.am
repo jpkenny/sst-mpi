@@ -30,7 +30,7 @@ libsst_mpi_la_SOURCES = \
   mpi_protocol/rendezvous_rdma.cc \
   mpi_types/mpi_type.cc \
   otf2_output_stat.cc \
-  sstmac_mpi.cc \
+  sst_mpi.cc \
   mpi_api.cc \
   mpi_api_win.cc \
   mpi_api_collectives.cc \
@@ -80,5 +80,5 @@ library_include_HEADERS = \
   mpi_call.h \
   otf2_output_stat.h \
   otf2_output_stat_fwd.h \
-  sstmac_mpi.h \
-  sstmac_mpi_macro.h 
+  sst_mpi.h \
+  sst_mpi_macro.h 

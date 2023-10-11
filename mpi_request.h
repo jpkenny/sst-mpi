@@ -81,7 +81,7 @@ struct CollectiveOpBase
   MPI_Op op;
   MpiType* sendtype;
   MpiType* recvtype;
-  Collective::type_t ty;
+  SST::Iris::sumi::Collective::type_t ty;
   MpiComm* comm;
   int sendcnt;
   int recvcnt;
@@ -98,7 +98,7 @@ struct CollectiveOpBase
 
 struct CollectiveOp :
   public CollectiveOpBase,
-  public sprockit::thread_safe_new<CollectiveOp>
+  public SST::Hg::thread_safe_new<CollectiveOp>
 {
   using ptr = std::unique_ptr<CollectiveOp>;
 
@@ -117,7 +117,7 @@ struct CollectiveOp :
 
 struct CollectivevOp :
   public CollectiveOpBase,
-  public sprockit::thread_safe_new<CollectivevOp>
+  public SST::Hg::thread_safe_new<CollectivevOp>
 {
   using ptr = std::unique_ptr<CollectivevOp>;
 
@@ -143,7 +143,7 @@ struct CollectivevOp :
 };
 
 class MpiRequest :
-  public sprockit::thread_safe_new<MpiRequest>
+  public SST::Hg::thread_safe_new<MpiRequest>
 {
  public:
   typedef enum {
@@ -234,11 +234,11 @@ class MpiRequest :
     return optype_;
   }
 
-  sstmac::Timestamp waitStart() const {
+  SST::Hg::Timestamp waitStart() const {
     return wait_start_;
   }
 
-  void setWaitStart(sstmac::Timestamp t){
+  void setWaitStart(SST::Hg::Timestamp t){
     wait_start_ = t;
   }
 
@@ -255,7 +255,7 @@ class MpiRequest :
   PersistentOp* persistent_op_;
   CollectiveOpBase::ptr collective_op_;
 
-  sstmac::Timestamp wait_start_;
+  SST::Hg::Timestamp wait_start_;
 
 };
 

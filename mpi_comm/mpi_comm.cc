@@ -76,7 +76,7 @@ MpiComm::MpiComm(
   AppId aid,
   bool del_grp,
   topotypes ty) :
-  sumi::Communicator(rank),
+  SST::Iris::sumi::Communicator(rank),
   group_(peers),
   next_collective_tag_(MPI_COMM_WORLD + 100),
   aid_(aid),
@@ -86,7 +86,7 @@ MpiComm::MpiComm(
   rank_(rank)
 {
   if (peers->size() == 0) {
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
          "trying to build communicator of size 0");
   }
 
@@ -134,7 +134,7 @@ MpiComm::deleteStatics()
 int
 MpiComm::globalToCommRank(int  /*global_rank*/) const
 {
-  sprockit::abort("mpi_comm::global_to_comm_rank");
+  SST::Hg::abort("mpi_comm::global_to_comm_rank");
   return 0;
 }
 
@@ -143,7 +143,7 @@ MpiComm::dupKeyvals(MpiComm* m)
 {
   std::unordered_map<int, keyval*>::iterator it, end = m->keyvals_.end();
   for (it = m->keyvals_.begin(); it != end; it++) {
-    sprockit::abort("dup_keyvals: not implemented");
+    SST::Hg::abort("dup_keyvals: not implemented");
     //keyval* c = (it->second)->clone(keyval::get_new_key());
     //keyvals_[c->key()] = c;
   }
@@ -152,17 +152,17 @@ MpiComm::dupKeyvals(MpiComm* m)
 std::string
 MpiComm::toString() const
 {
-  return sprockit::sprintf("mpicomm(id=%d,size=%d,rank=%d)", id_, size(), rank_);
+  return SST::Hg::sprintf("mpicomm(id=%d,size=%d,rank=%d)", id_, size(), rank_);
 }
 
 int
 MpiComm::size() const
 {
   if (id_ == MPI_COMM_NULL) {
-    sprockit::abort("mpicomm: trying to call size() on a null mpicomm");
+    SST::Hg::abort("mpicomm: trying to call size() on a null mpicomm");
   }
   if (!group_) {
-    sprockit::abort("mpicomm: group is null for some reason in size()");
+    SST::Hg::abort("mpicomm: group is null for some reason in size()");
   }
   return group_->size();
 }

@@ -57,7 +57,7 @@ namespace SST::MPI {
 /**
  * @brief The mpi_protocol class
  */
-class MpiProtocol : public sprockit::printable {
+class MpiProtocol : public SST::Hg::printable {
 
  public:
   enum PROTOCOL_ID {
@@ -69,7 +69,7 @@ class MpiProtocol : public sprockit::printable {
   };
 
  public:
-  virtual void start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* typeobj,
+  virtual void start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* typeobj,
                      int tag, MPI_Comm comm, int seq_id, MpiRequest* req) = 0;
 
   virtual void incoming(MpiMessage* msg) = 0;
@@ -87,7 +87,7 @@ class MpiProtocol : public sprockit::printable {
 
   void* fillSendBuffer(int count, void *buffer, MpiType *typeobj);
 
-  void logRecvDelay(int stage, sstmac::TimeDelta timeSinceQuiesce,
+  void logRecvDelay(int stage, SST::Hg::TimeDelta timeSinceQuiesce,
                     MpiMessage* msg, MpiQueueRecvRequest* req);
 };
 
@@ -108,7 +108,7 @@ class Eager0 final : public MpiProtocol
     return "eager0";
   }
 
-  void start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* typeobj,
+  void start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* typeobj,
              int tag, MPI_Comm comm, int seq_id, MpiRequest* req) override;
 
   void incoming(MpiMessage *msg) override;
@@ -143,7 +143,7 @@ class Eager1 final : public MpiProtocol
     return "eager1";
   }
 
-  void start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* typeobj,
+  void start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* typeobj,
              int tag, MPI_Comm comm, int seq_id, MpiRequest* req) override;
 
   void incoming(MpiMessage *msg) override;
@@ -208,7 +208,7 @@ class RendezvousGet final : public RendezvousProtocol
 
   ~RendezvousGet();
 
-  void start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* type,
+  void start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* type,
              int tag, MPI_Comm comm, int seq_id, MpiRequest* req) override;
 
   void incoming(MpiMessage *msg) override;
@@ -255,7 +255,7 @@ class DirectPut final : public MpiProtocol
 
   ~DirectPut();
 
-  void start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* type,
+  void start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* type,
              int tag, MPI_Comm comm, int seq_id, MpiRequest* req) override;
 
   void incoming(MpiMessage *msg) override;

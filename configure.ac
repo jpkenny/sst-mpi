@@ -161,7 +161,7 @@ if test "X$have_elements" = "Xyes"; then
   CPPFLAGS="$CPPFLAGS $SST_ELEMENTS_CPPFLAGS $SST_CPPFLAGS"
   CXXFLAGS="$CXXFLAGS $SST_CXXFLAGS"
 
-  AC_CHECK_HEADERS([sst/elements/memHierarchy/memEventBase.h], [],
+  AC_CHECK_HEADERS([sst/elements/mercury/sst_hg_config.h], [],
       [AC_MSG_ERROR([Could not locate SST element header files at $SST_ELEMENTS])])
 
   AC_SUBST(SST_ELEMENTS_CPPFLAGS)
@@ -172,6 +172,8 @@ else
   AC_SUBST(SST_ELEMENTS_CPPFLAGS)
   AM_CONDITIONAL([HAVE_SST_ELEMENTS], false)
 fi
+
+CPPFLAGS="$CPPFLAGS $SST_ELEMENTS_CPPFLAGS -I$SST_ELEMENTS/include/sst/elements -I$SST_ELEMENTS/include/sst/elements/mercury -I$SST_ELEMENTS/include/sst/elements/iris"
 
 AC_CONFIG_FILES([Makefile])
 

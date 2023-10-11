@@ -48,10 +48,12 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/thread.h>
 //#include <sstmac/software/process/ftq_scope.h>
 
-#define start_probe_call(fxn,comm,src,tag) \
-  StartMPICall(fxn); \
-  mpi_api_debug(sprockit::dbg::mpi, "%s(%s,%s,%s)", \
-    #fxn, srcStr(source).c_str(), tagStr(tag).c_str(), commStr(comm).c_str());
+//#define start_probe_call(fxn,comm,src,tag) \
+//  StartMPICall(fxn); \
+//  mpi_api_debug(sprockit::dbg::mpi, "%s(%s,%s,%s)", \
+//    #fxn, srcStr(source).c_str(), tagStr(tag).c_str(), commStr(comm).c_str());
+
+#define start_probe_call(fxn,comm,src,tag)
 
 namespace SST::MPI {
 
@@ -85,8 +87,8 @@ MpiApi::iprobe(int source, int tag, MPI_Comm comm, int *flag, MPI_Status *status
   bool found = queue_->iprobe(commPtr, source, tag, status);
   if (found){
     *flag = 1;
-    mpi_api_debug(sprockit::dbg::mpi, "MPI_Iprobe(%s,%s,%s)",
-      srcStr(source).c_str(), tagStr(tag).c_str(), commStr(comm).c_str());
+//    mpi_api_debug(sprockit::dbg::mpi, "MPI_Iprobe(%s,%s,%s)",
+//      srcStr(source).c_str(), tagStr(tag).c_str(), commStr(comm).c_str());
   } else {
     if (iprobe_delay_us_){
       queue_->forwardProgress(1e-6*iprobe_delay_us_);

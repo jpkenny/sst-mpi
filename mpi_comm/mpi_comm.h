@@ -43,6 +43,7 @@ Questions? Contact sst-macro-help@sandia.gov
 */
 
 #include <sst/elements/iris/sumi/communicator.h>
+#include <sst/elements/mercury/common/errors.h>
 #include <sst/elements/mercury/common/node_address.h>
 #include <sst/elements/mercury/operating_system/process/task_id.h>
 #include <sst/elements/mercury/operating_system/process/app_id.h>
@@ -176,7 +177,7 @@ class MpiComm : public SST::Iris::sumi::Communicator
   MpiRequest* getRequest(int tag) const {
     auto it = ireqs_.find(tag);
     if (it == ireqs_.end()){
-      spkt_throw_printf(sprockit::ValueError,
+      sst_hg_throw_printf(SST::Hg::ValueError,
           "cannot find tag %d on comm %d for returning collective MPI_Request",
           tag, id_);
     }

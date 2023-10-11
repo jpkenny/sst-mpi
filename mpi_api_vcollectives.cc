@@ -49,17 +49,25 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/thread.h>
 //#include <sstmac/software/process/ftq_scope.h>
 
+//#define do_vcoll(coll, fxn, ...) \
+//  StartMPICall(fxn); \
+//  auto op = start##coll(#fxn, __VA_ARGS__); \
+//  waitCollective(std::move(op)); \
+//  FinishMPICall(fxn);
+
 #define do_vcoll(coll, fxn, ...) \
-  StartMPICall(fxn); \
   auto op = start##coll(#fxn, __VA_ARGS__); \
-  waitCollective(std::move(op)); \
-  FinishMPICall(fxn);
+  waitCollective(std::move(op));
+
+//#define start_vcoll(coll, fxn, ...) \
+//  StartMPICall(fxn); \
+//  auto op = start##coll(#fxn, __VA_ARGS__); \
+//  addImmediateCollective(std::move(op), req); \
+//  FinishMPICall(fxn)
 
 #define start_vcoll(coll, fxn, ...) \
-  StartMPICall(fxn); \
   auto op = start##coll(#fxn, __VA_ARGS__); \
-  addImmediateCollective(std::move(op), req); \
-  FinishMPICall(fxn)
+  addImmediateCollective(std::move(op), req);
 
 namespace SST::MPI {
 
@@ -68,18 +76,18 @@ MpiApi::finishVcollectiveOp(CollectiveOpBase* op_)
 {
   CollectivevOp* op = static_cast<CollectivevOp*>(op_);
   if (op->packed_recv){
-    spkt_throw_printf(sprockit::UnimplementedError,
+    sst_hg_throw_printf(SST::Hg::UnimplementedError,
                "cannot handle non-contiguous types in collective %s",
-               Collective::tostr(op->ty));
+               Iris::sumi::Collective::tostr(op->ty));
   }
   if (op->packed_send){
-    spkt_throw_printf(sprockit::UnimplementedError,
+    sst_hg_throw_printf(SST::Hg::UnimplementedError,
                "cannot handle non-contiguous types in collective %s",
-               Collective::tostr(op->ty));
+               Iris::sumi::Collective::tostr(op->ty));
   }
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startAllgatherv(CollectivevOp* op)
 {
   return engine_->allgatherv(op->tmp_recvbuf, op->tmp_sendbuf,
@@ -93,15 +101,15 @@ MpiApi::startAllgatherv(const char* name, MPI_Comm comm, int sendcount, MPI_Data
                         const int *recvcounts, const int *displs, MPI_Datatype recvtype,
                         const void *sendbuf, void *recvbuf)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,<...>,%s,%s)", name,
-    sendcount, typeStr(sendtype).c_str(),
-    typeStr(recvtype).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,<...>,%s,%s)", name,
+//    sendcount, typeStr(sendtype).c_str(),
+//    typeStr(recvtype).c_str(),
+//    commStr(comm).c_str());
 
   auto op = CollectivevOp::create(sendcount, const_cast<int*>(recvcounts),
                                   const_cast<int*>(displs), getComm(comm));
-  startMpiCollective(Collective::allgatherv, sendbuf, recvbuf, sendtype, recvtype, op.get());
+  startMpiCollective(Iris::sumi::Collective::allgatherv, sendbuf, recvbuf, sendtype, recvtype, op.get());
   auto* msg = startAllgatherv(op.get());
   if (msg){
     op->complete = true;
@@ -159,7 +167,7 @@ MpiApi::iallgatherv(int sendcount, MPI_Datatype sendtype,
                     recvtype, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startAlltoallv(CollectivevOp* op)
 {
   return engine_->alltoallv(op->tmp_recvbuf, op->tmp_sendbuf,
@@ -175,13 +183,13 @@ MpiApi::startAlltoallv(const char* name, MPI_Comm comm,
                        const void *sendbuf,  void *recvbuf)
 {
   if (sendbuf || recvbuf){
-    mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-      "%s(<...>,%s,<...>,%s,%s)", name,
-      typeStr(sendtype).c_str(), typeStr(recvtype).c_str(), commStr(comm).c_str());
+//    mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//      "%s(<...>,%s,<...>,%s,%s)", name,
+//      typeStr(sendtype).c_str(), typeStr(recvtype).c_str(), commStr(comm).c_str());
     auto op = CollectivevOp::create(const_cast<int*>(sendcounts), const_cast<int*>(sdispls),
                                     const_cast<int*>(recvcounts), const_cast<int*>(rdispls),
                                     getComm(comm));
-    startMpiCollective(Collective::alltoallv, sendbuf, recvbuf, sendtype, recvtype, op.get());
+    startMpiCollective(Iris::sumi::Collective::alltoallv, sendbuf, recvbuf, sendtype, recvtype, op.get());
     auto* msg = startAlltoallv(op.get());
     if (msg){
       op->complete = true;
@@ -266,15 +274,15 @@ MpiApi::ialltoallw(const void * /*sendbuf*/, const int  /*sendcounts*/[],
                     const int  /*rdispls*/[], const MPI_Datatype  /*recvtypes*/[],
                     MPI_Comm  /*comm*/, MPI_Request * /*request*/)
 {
-  sprockit::abort("MPI_Ialltoallw: unimplemented"
+  SST::Hg::abort("MPI_Ialltoallw: unimplemented"
                   "but, seriously, why are you using this collective anyway?");
   return MPI_SUCCESS;
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startGatherv(CollectivevOp*  /*op*/)
 {
-  sprockit::abort("sumi::gatherv: not implemented");
+  SST::Hg::abort("sumi::gatherv: not implemented");
   return nullptr;
   //transport::gatherv(op->tmp_recvbuf, op->tmp_sendbuf,
   //                     op->sendcnt, typeSize, op->tag,
@@ -287,11 +295,11 @@ MpiApi::startGatherv(const char* name, MPI_Comm comm, int sendcount, MPI_Datatyp
                      const void *sendbuf, void *recvbuf)
 {
   if (sendbuf || recvbuf){
-    mpi_api_debug(sprockit::dbg::mpi,
-      "%s(%d,%s,<...>,%s,%d,%s)", name,
-      sendcount, typeStr(sendtype).c_str(),
-      typeStr(recvtype).c_str(),
-      int(root), commStr(comm).c_str());
+//    mpi_api_debug(sprockit::dbg::mpi,
+//      "%s(%d,%s,<...>,%s,%d,%s)", name,
+//      sendcount, typeStr(sendtype).c_str(),
+//      typeStr(recvtype).c_str(),
+//      int(root), commStr(comm).c_str());
     auto op = CollectivevOp::create(sendcount,
                 const_cast<int*>(recvcounts),
                 const_cast<int*>(displs), getComm(comm));
@@ -304,7 +312,7 @@ MpiApi::startGatherv(const char* name, MPI_Comm comm, int sendcount, MPI_Datatyp
       recvbuf = nullptr;
     }
 
-    startMpiCollective(Collective::gatherv, sendbuf, recvbuf, sendtype, recvtype, op.get());
+    startMpiCollective(Iris::sumi::Collective::gatherv, sendbuf, recvbuf, sendtype, recvtype, op.get());
     auto* msg = startGatherv(op.get());
     if (msg){
       op->complete = true;
@@ -378,10 +386,10 @@ MpiApi::igatherv(int sendcount, MPI_Datatype sendtype,
                   recvcounts, NULL, recvtype, root, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startScatterv(CollectivevOp*  /*op*/)
 {
-  sprockit::abort("sumi::scatterv: not implemented");
+  SST::Hg::abort("sumi::scatterv: not implemented");
   return nullptr;
   //transport::allgatherv(op->tmp_recvbuf, op->tmp_sendbuf,
   //                     op->sendcnt, typeSize, op->tag,
@@ -393,11 +401,11 @@ MpiApi::startScatterv(const char* name, MPI_Comm comm, const int *sendcounts, MP
                       const int *displs, int recvcount, MPI_Datatype recvtype, const void *sendbuf, void *recvbuf)
 {
   if (sendbuf || recvbuf){
-    mpi_api_debug(sprockit::dbg::mpi,
-      "%s(<...>,%s,%d,%s,%d,%s)", name,
-      typeStr(sendtype).c_str(),
-      recvcount, typeStr(recvtype).c_str(),
-      int(root), commStr(comm).c_str());
+//    mpi_api_debug(sprockit::dbg::mpi,
+//      "%s(<...>,%s,%d,%s,%d,%s)", name,
+//      typeStr(sendtype).c_str(),
+//      recvcount, typeStr(recvtype).c_str(),
+//      int(root), commStr(comm).c_str());
 
     auto op = CollectivevOp::create(const_cast<int*>(sendcounts),
                       const_cast<int*>(displs), recvcount, getComm(comm));
@@ -409,7 +417,7 @@ MpiApi::startScatterv(const char* name, MPI_Comm comm, const int *sendcounts, MP
       sendbuf = nullptr;
     }
 
-    startMpiCollective(Collective::scatterv, sendbuf, recvbuf, sendtype, recvtype, op.get());
+    startMpiCollective(Iris::sumi::Collective::scatterv, sendbuf, recvbuf, sendtype, recvtype, op.get());
     auto* msg = startScatterv(op.get());
     if (msg){
       op->complete = true;

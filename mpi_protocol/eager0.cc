@@ -47,7 +47,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_queue/mpi_queue.h>
 #include <mpi_queue/mpi_queue_recv_request.h>
 //#include <sst/elements/mercury/operating_system/process/backtrace.h>
-#include <sst/elements/mercury/common/null_buffer.h>
+//#include <sst/elements/mercury/common/null_buffer.h>
 #include <sst/core/params.h>
 
 #include <unusedvariablemacro.h>
@@ -62,10 +62,10 @@ Eager0::Eager0(SST::Params &params, MpiQueue *queue) :
 }
 
 void
-Eager0::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* typeobj,
+Eager0::start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* typeobj,
               int tag, MPI_Comm comm, int seq_id, MpiRequest* req)
 {
-  SSTMAC_MAYBE_UNUSED CallGraphAppend(MPIEager0Protocol_Send_Header);
+  //SSTMAC_MAYBE_UNUSED CallGraphAppend(MPIEager0Protocol_Send_Header);
   void* temp_buf = nullptr;
   if (isNonNullBuffer(buffer)){
     temp_buf = fillSendBuffer(count, buffer, typeobj);
@@ -73,7 +73,7 @@ Eager0::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, 
   uint64_t payload_bytes = count*typeobj->packed_size();
   queue_->memcopy(payload_bytes);
   auto* msg = mpi_->smsgSend<MpiMessage>(tid, payload_bytes, temp_buf,
-                              queue_->pt2ptCqId(), queue_->pt2ptCqId(), sumi::Message::pt2pt, qos_,
+                              queue_->pt2ptCqId(), queue_->pt2ptCqId(), Iris::sumi::Message::pt2pt, qos_,
                               src_rank, dst_rank, typeobj->id,  tag, comm, seq_id,
                               count, typeobj->packed_size(), nullptr, EAGER0);
 
@@ -85,7 +85,7 @@ void
 Eager0::incoming(MpiMessage *msg, MpiQueueRecvRequest *req)
 {
   //1 = stage, TimeDelay() = time since last quiesce
-  logRecvDelay(1, sstmac::TimeDelta(), msg, req);
+  logRecvDelay(1, SST::Hg::TimeDelta(), msg, req);
   if (req->recv_buffer_){
 #if SSTMAC_SANITY_CHECK
     if (!msg->smsgBuffer()){
@@ -103,8 +103,8 @@ Eager0::incoming(MpiMessage *msg, MpiQueueRecvRequest *req)
 void
 Eager0::incoming(MpiMessage* msg)
 {
-  SSTMAC_MAYBE_UNUSED CallGraphAppend(MPIEager0Protocol_Handle_Header);
-  if (msg->sstmac::hw::NetworkMessage::type() == MpiMessage::payload_sent_ack){
+  //SSTMAC_MAYBE_UNUSED CallGraphAppend(MPIEager0Protocol_Handle_Header);
+  if (msg->SST::Hg::NetworkMessage::type() == MpiMessage::payload_sent_ack){
     char* temp_buf = (char*) msg->smsgBuffer();
     if (temp_buf) delete[] temp_buf;
     delete msg;

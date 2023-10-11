@@ -69,7 +69,7 @@ MpiGroup::at(int rank)
     return TaskId(rank);
   } else {
     if (rank >= local_to_world_map_.size()){
-      spkt_throw_printf(sprockit::ValueError,
+      sst_hg_throw_printf(SST::Hg::ValueError,
                         "invalid rank %d requested for MPI group %p of size %d with ranks %s",
                         rank, this, local_to_world_map_.size(),
                         local_to_world_map_.size() < 6 ? stlString(local_to_world_map_).c_str() : "");

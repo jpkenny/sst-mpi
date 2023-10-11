@@ -45,7 +45,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_request_fwd.h>
 #include <mpi_queue/mpi_queue_fwd.h>
 #include <mpi_message.h>
-#include <sst/elements/mercury/common/event_location.h>
+#include <sst/elements/mercury/common/node_address.h>
 
 #pragma once
 
@@ -61,7 +61,7 @@ class MpiQueueRecvRequest  {
   friend class Eager0;
 
  public:
-  MpiQueueRecvRequest(sstmac::Timestamp start, MpiRequest* key, MpiQueue* queue,
+  MpiQueueRecvRequest(SST::Hg::Timestamp start, MpiRequest* key, MpiQueue* queue,
                      int count, MPI_Datatype type, int source, int tag,
                      MPI_Comm comm, void* buffer);
 
@@ -77,7 +77,7 @@ class MpiQueueRecvRequest  {
     return key_;
   }
 
-  sstmac::Timestamp start() const {
+  SST::Hg::Timestamp start() const {
     return start_;
   }
 
@@ -103,7 +103,7 @@ class MpiQueueRecvRequest  {
   int count_;
   MpiType* type_;
   MpiRequest* key_;
-  sstmac::Timestamp start_;
+  SST::Hg::Timestamp start_;
 };
 
 }

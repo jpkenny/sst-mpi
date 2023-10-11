@@ -49,11 +49,11 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/common/timestamp.h>
 #include <sst/elements/mercury/operating_system/process/task_id.h>
 #include <sst/elements/mercury/operating_system/process/app_id.h>
-
 #include <sst/elements/mercury/components/operating_system_fwd.h>
 #include <sst/elements/iris/sumi/message.h>
 #include <sst/elements/mercury/common/thread_safe_new.h>
 #include <sst/elements/mercury/hardware/network/network_message.h>
+#include <sst/core/serialization/serializer.h>
 
 #pragma once
 
@@ -71,7 +71,7 @@ class MpiMessage final :
               MPI_Datatype type, int tag, MPI_Comm commid, int seqnum,
               int count, int type_size, void* partner_buf, int protocol,
               Args&&... args) :
-    sumi::ProtocolMessage(count, type_size, partner_buf, protocol,
+    Iris::sumi::ProtocolMessage(count, type_size, partner_buf, protocol,
                            std::forward<Args>(args)...),
     src_rank_(src_rank),
     dst_rank_(dst_rank),
@@ -79,7 +79,7 @@ class MpiMessage final :
     tag_(tag),
     commid_(commid),
     seqnum_(seqnum),
-    min_quiesce_(sstmac::Timestamp::max())
+    min_quiesce_(SST::Hg::Timestamp::max())
   {
   }
 
@@ -98,7 +98,7 @@ class MpiMessage final :
     return msg;
   }
 
-  void serialize_order(sstmac::serializer& ser) override;
+  void serialize_order(Core::Serialization::serializer& ser) override;
 
   MPI_Datatype type() const {
     return type_;

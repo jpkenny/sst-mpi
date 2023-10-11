@@ -212,7 +212,7 @@ MpiCommFactory::commSplit(MpiComm* caller, int my_color, int my_key)
                      result, 3, MPI_INT,
                      caller->id());
 #else
-  sstmac::sw::apiLock();
+  SST::Hg::apiLock();
   int root = caller->peerTask(int(0));
   int tag = caller->nextCollectiveTag();
   comm_split_entry& entry = comm_split_entries[aid][int(caller->id())][root][tag];
@@ -248,7 +248,7 @@ MpiCommFactory::commSplit(MpiComm* caller, int my_color, int my_key)
   mybuf[0] = mydata[0];
   mybuf[1] = mydata[1];
   mybuf[2] = mydata[2];
-  sstmac::sw::apiUnlock();
+  SST::Hg::apiUnlock();
 
   //just model the allgather
 

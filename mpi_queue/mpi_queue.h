@@ -59,7 +59,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_protocol/mpi_protocol_fwd.h>
 
 #include <mpi_queue/mpi_queue_recv_request_fwd.h>
-#include <mpi_queue/mpi_queue_probe_request_fwd.h>
+#include <mpi_queue/mpi_queue_probe_request.h>
 
 #include <sst/core/params.h>
 
@@ -81,11 +81,11 @@ class MpiQueue
   friend class DirectPut;
   friend class MpiQueueRecvRequest;
 
-  using progress_queue = SST::Hg::MultiProgressQueue<SST::MPI::Message>;
+  using progress_queue = SST::Hg::MultiProgressQueue<SST::Iris::sumi::Message>;
 
  public:
   MpiQueue(SST::Params& params, int TaskId,
-            MpiApi* api, CollectiveEngine* engine);
+            MpiApi* api, Iris::sumi::CollectiveEngine* engine);
 
   ~MpiQueue() throw ();
 
@@ -112,19 +112,19 @@ class MpiQueue
 
   void memcopy(uint64_t bytes);
 
-  sstmac::Timestamp now() const;
+  SST::Hg::Timestamp now() const;
 
   void finalizeRecv(MpiMessage* msg,
                 MpiQueueRecvRequest* req);
 
-  sstmac::Timestamp progressLoop(MpiRequest* req);
+  SST::Hg::Timestamp progressLoop(MpiRequest* req);
 
   void nonblockingProgress();
 
   void startProgressLoop(const std::vector<MpiRequest*>& req);
 
   void startProgressLoop(const std::vector<MpiRequest*>& req,
-                      sstmac::TimeDelta timeout);
+                      SST::Hg::TimeDelta timeout);
 
   void finishProgressLoop(const std::vector<MpiRequest*>& req);
 
@@ -158,7 +158,7 @@ class MpiQueue
    * @brief incoming_pt2pt_message Message might be held up due to sequencing constraints
    * @param msg
    */
-  void incomingPt2ptMessage(SST::Hg::Message* msg);
+  void incomingPt2ptMessage(Iris::sumi::Message* msg);
 
   /**
    * @brief handle_pt2pt_message Message is guaranteed to satisfy sequencing constraints
@@ -166,9 +166,9 @@ class MpiQueue
    */
   void handlePt2ptMessage(MpiMessage* msg);
 
-  void incomingCollectiveMessage(sumi::Message* Message);
+  void incomingCollectiveMessage(Iris::sumi::Message* Message);
 
-  void incomingMessage(sumi::Message* Message);
+  void incomingMessage(Iris::sumi::Message* Message);
 
   void notifyProbes(MpiMessage* Message);
 
@@ -196,7 +196,7 @@ class MpiQueue
   std::vector<MpiProtocol*> protocols_;
 
   /// Probe requests watching
-  std::list<mpi_queue_probe_request*> probelist_;
+  std::list<SST::MPI::mpi_queue_probe_request*> probelist_;
 
   progress_queue queue_;
 
@@ -217,16 +217,16 @@ class MpiQueue
 
 }
 
-#define mpi_queue_action_debug(rank, ...) \
-  mpi_debug(rank, sprockit::dbg::mpi_queue, \
-   " [queue] %s", sprockit::sprintf(__VA_ARGS__).c_str())
+//#define mpi_queue_action_debug(rank, ...) \
+//  mpi_debug(rank, sprockit::dbg::mpi_queue, \
+//   " [queue] %s", sprockit::sprintf(__VA_ARGS__).c_str())
 
-//for local use in mpi queue object
-#define mpi_queue_debug(...) \
-  mpi_queue_action_debug(int(taskid_), __VA_ARGS__)
+////for local use in mpi queue object
+//#define mpi_queue_debug(...) \
+//  mpi_queue_action_debug(int(taskid_), __VA_ARGS__)
 
-#define mpi_queue_protocol_debug(...) \
-  mpi_queue_action_debug(mpi_->rank(), __VA_ARGS__)
+//#define mpi_queue_protocol_debug(...) \
+//  mpi_queue_action_debug(mpi_->rank(), __VA_ARGS__)
 
 
-#endif
+//#endif

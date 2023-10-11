@@ -49,15 +49,18 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/thread.h>
 //#include <sstmac/software/process/ftq_scope.h>
 
-#define start_pt2pt_call(fxn, count, type, partner, tag, comm) \
-  StartMPICall(fxn); \
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_pt2pt, \
-   "%s(%d,%s,%s,%s,%s)", #fxn, \
-   count, typeStr(type).c_str(), srcStr(partner).c_str(), \
-   tagStr(tag).c_str(), commStr(comm).c_str());
+//#define start_pt2pt_call(fxn, count, type, partner, tag, comm) \
+//  StartMPICall(fxn); \
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_pt2pt, \
+//   "%s(%d,%s,%s,%s,%s)", #fxn, \
+//   count, typeStr(type).c_str(), srcStr(partner).c_str(), \
+//   tagStr(tag).c_str(), commStr(comm).c_str());
 
-#define start_Ipt2pt_call(fxn,count,type,partner,tag,comm,reqPtr) \
-  StartMPICall(fxn)
+//#define start_Ipt2pt_call(fxn,count,type,partner,tag,comm,reqPtr) \
+//  StartMPICall(fxn)
+#define start_pt2pt_call(fxn, count, type, partner, tag, comm)
+#define start_Ipt2pt_call(fxn,count,type,partner,tag,comm,reqPtr)
+#define FinishMPICall(fxn)
 
 namespace SST::MPI {
 
@@ -138,8 +141,8 @@ MpiApi::sendrecv(const void *sendbuf, int sendcount,
 int
 MpiApi::request_free(MPI_Request *req)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
-    "MPI_Request_free(REQ=%d)", *req);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
+//    "MPI_Request_free(REQ=%d)", *req);
 
 #ifdef SSTMAC_OTF2_ENABLED
   auto start_clock = traceClock();
@@ -173,7 +176,7 @@ MpiApi::doStart(MPI_Request req)
   MpiRequest* reqPtr = getRequest(req);
   PersistentOp* op = reqPtr->persistentData();
   if (op == nullptr){
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
                       "Starting MPI_Request that is not persistent");
   }
 
@@ -198,9 +201,9 @@ MpiApi::start(MPI_Request* req)
   auto start_clock = traceClock();
 #endif
 
-  _StartMPICall_(MPI_Start);
+  //_StartMPICall_(MPI_Start);
   doStart(*req);
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if(OTF2Writer_) {
@@ -213,11 +216,11 @@ MpiApi::start(MPI_Request* req)
 int
 MpiApi::startall(int count, MPI_Request* req)
 {
-  _StartMPICall_(MPI_Startall);
+  //_StartMPICall_(MPI_Startall);
   for (int i=0; i < count; ++i){
     doStart(req[i]);
   }
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_) {
@@ -233,17 +236,17 @@ MpiApi::sendInit(const void *buf, int count,
                  MPI_Datatype datatype, int dest, int tag,
                  MPI_Comm comm, MPI_Request *request)
 {
-  _StartMPICall_(MPI_Send_init);
+  //_StartMPICall_(MPI_Send_init);
 
   MpiRequest* req = MpiRequest::construct(MpiRequest::Send);
   addRequestPtr(req, request);
 
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
-    "MPI_Send_init(%d,%s,%d:%d,%s,%s;REQ=%d)",
-    count, typeStr(datatype).c_str(), int(dest),
-    int(getComm(comm)->peerTask(dest)),
-    tagStr(tag).c_str(), commStr(comm).c_str(),
-    *request);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
+//    "MPI_Send_init(%d,%s,%d:%d,%s,%s;REQ=%d)",
+//    count, typeStr(datatype).c_str(), int(dest),
+//    int(getComm(comm)->peerTask(dest)),
+//    tagStr(tag).c_str(), commStr(comm).c_str(),
+//    *request);
 
   PersistentOp* op = new PersistentOp;
   op->content = const_cast<void*>(buf);
@@ -254,7 +257,7 @@ MpiApi::sendInit(const void *buf, int count,
   op->comm = comm;
 
   req->setPersistent(op);
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -290,10 +293,10 @@ MpiApi::isend(const void *buf, int count, MPI_Datatype datatype, int dest,
   start_Ipt2pt_call(MPI_Isend,count,datatype,dest,tag,comm,request);
   MpiRequest* req = doIsend(buf, count, datatype, dest, tag, comm);
   addRequestPtr(req, request);
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
-    "MPI_Isend(%d,%s,%d,%s,%s;REQ=%d)",
-    count, typeStr(datatype).c_str(), int(dest),
-    tagStr(tag).c_str(), commStr(comm).c_str(), *request);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request | sprockit::dbg::mpi_pt2pt,
+//    "MPI_Isend(%d,%s,%d,%s,%s;REQ=%d)",
+//    count, typeStr(datatype).c_str(), int(dest),
+//    tagStr(tag).c_str(), commStr(comm).c_str(), *request);
   queue_->nonblockingProgress();
   FinishMPICall(MPI_Isend);
 
@@ -353,16 +356,16 @@ int
 MpiApi::recvInit(void *buf, int count, MPI_Datatype datatype, int source,
                    int tag, MPI_Comm comm, MPI_Request *request)
 {
-  _StartMPICall_(MPI_Recv_init);
+  //_StartMPICall_(MPI_Recv_init);
 
   MpiRequest* req = MpiRequest::construct(MpiRequest::Recv);
   addRequestPtr(req, request);
 
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_pt2pt,
-    "MPI_Recv_init(%d,%s,%s,%s,%s;REQ=%d)",
-    count, typeStr(datatype).c_str(),
-    srcStr(source).c_str(), tagStr(tag).c_str(),
-    commStr(comm).c_str(), *request);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_pt2pt,
+//    "MPI_Recv_init(%d,%s,%s,%s,%s;REQ=%d)",
+//    count, typeStr(datatype).c_str(),
+//    srcStr(source).c_str(), tagStr(tag).c_str(),
+//    commStr(comm).c_str(), *request);
 
   PersistentOp* op = new PersistentOp;
   op->content = buf;
@@ -379,7 +382,7 @@ MpiApi::recvInit(void *buf, int count, MPI_Datatype datatype, int source,
 #endif
 
   req->setPersistent(op);
-  endAPICall();
+  //endAPICall();
   return MPI_SUCCESS;
 }
 
@@ -393,17 +396,17 @@ MpiApi::irecv(void *buf, int count, MPI_Datatype datatype, int source,
 
   start_Ipt2pt_call(MPI_Irecv,count,datatype,dest,tag,comm,request);
 
-  using namespace sprockit;
+  using namespace SST::Hg;
   MpiComm* commPtr = getComm(comm);
 
   MpiRequest* req = MpiRequest::construct(MpiRequest::Recv);
   addRequestPtr(req, request);
 
-  mpi_api_debug(dbg::mpi | dbg::mpi_request | dbg::mpi_pt2pt,
-      "MPI_Irecv(%d,%s,%s,%s,%s;REQ=%d)",
-      count, typeStr(datatype).c_str(),
-      srcStr(commPtr, source).c_str(), tagStr(tag).c_str(),
-      commStr(comm).c_str(), *request);
+//  mpi_api_debug(dbg::mpi | dbg::mpi_request | dbg::mpi_pt2pt,
+//      "MPI_Irecv(%d,%s,%s,%s,%s;REQ=%d)",
+//      count, typeStr(datatype).c_str(),
+//      srcStr(commPtr, source).c_str(), tagStr(tag).c_str(),
+//      commStr(comm).c_str(), *request);
 
   if (source != MPI_PROC_NULL){
     queue_->recv(req, count, datatype, source, tag, commPtr, buf);

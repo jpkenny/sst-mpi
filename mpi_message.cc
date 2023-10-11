@@ -47,16 +47,17 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_protocol/mpi_protocol.h>
 //#include <sprockit/debug.h>
 #include <sst/elements/mercury/common/errors.h>
-
 #include <stdlib.h>
 #include <sstream>
 
 #define enumcase(x) case x: return #x
 
+using SST::Core::Serialization::serializer;
+
 namespace SST::MPI {
 
 void
-MpiMessage::serialize_order(sstmac::serializer& ser)
+MpiMessage::serialize_order(serializer& ser)
 {
   ProtocolMessage::serialize_order(ser);
   ser & (src_rank_);
@@ -109,7 +110,7 @@ MpiMessage::toString() const
      << ", seq=" << seqnum_
      << ", stage=" << stage()
      << ", protocol=" << protocol()
-     << ", type=" << sstmac::hw::NetworkMessage::typeStr();
+     << ", type=" << SST::Hg::NetworkMessage::typeStr();
 
   return ss.str();
 }

@@ -47,7 +47,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_api.h>
 #include <mpi_queue/mpi_queue_recv_request.h>
 //#include <sstmac/software/process/backtrace.h>
-#include <sst/elements/mercury/common/null_buffer.h>
+//#include <sst/elements/mercury/common/null_buffer.h>
 #include <sst/core/params.h>
 
 namespace SST::MPI {
@@ -62,7 +62,7 @@ Eager1::Eager1(SST::Params &params, MpiQueue *queue) :
 }
 
 void
-Eager1::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count,
+Eager1::start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count,
               MpiType* typeobj, int tag, MPI_Comm comm, int seq_id, MpiRequest* key)
 {
   void* eager_buf = nullptr;
@@ -71,7 +71,7 @@ Eager1::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, 
   }
 
   mpi_->smsgSend<MpiMessage>(tid, 64/*metadata size - use fixed to avoid sizeof*/,
-                   nullptr, sumi::Message::no_ack, queue_->pt2ptCqId(), sumi::Message::pt2pt, header_qos_,
+                   nullptr, Iris::sumi::Message::no_ack, queue_->pt2ptCqId(), Iris::sumi::Message::pt2pt, header_qos_,
                    src_rank, dst_rank, typeobj->id, tag, comm, seq_id,
                    count, typeobj->packed_size(), eager_buf, EAGER1);
 
@@ -95,7 +95,7 @@ Eager1::incomingHeader(MpiMessage* msg)
 void
 Eager1::incomingPayload(MpiMessage* msg)
 {
-  CallGraphAppend(MPIEager1Protocol_Handle_RDMA_Payload);
+  //CallGraphAppend(MPIEager1Protocol_Handle_RDMA_Payload);
   MpiQueueRecvRequest* req = queue_->findMatchingRecv(msg);
   if (req) incoming(msg, req);
 }
@@ -104,7 +104,7 @@ void
 Eager1::incoming(MpiMessage *msg, MpiQueueRecvRequest* req)
 {
   //1 = stage, TimeDelay() = time since last quiesce
-  logRecvDelay(1, sstmac::TimeDelta(), msg, req);
+  logRecvDelay(1, SST::Hg::TimeDelta(), msg, req);
   if (req->recv_buffer_){
     char* temp_recv_buf = (char*) msg->localBuffer();
 #if SSTMAC_SANITY_CHECK
@@ -134,18 +134,18 @@ void
 Eager1::incoming(MpiMessage* msg)
 {
   switch(msg->NetworkMessage::type()){
-  case sstmac::hw::NetworkMessage::smsg_send:
+  case SST::Hg::NetworkMessage::smsg_send:
     incomingHeader(msg);
     break;
-  case sstmac::hw::NetworkMessage::rdma_get_sent_ack:
+  case SST::Hg::NetworkMessage::rdma_get_sent_ack:
     incomingAck(msg);
     break;
-  case sstmac::hw::NetworkMessage::rdma_get_payload:
+  case SST::Hg::NetworkMessage::rdma_get_payload:
     incomingPayload(msg);
     break;
   default:
-    spkt_abort_printf("Got bad message type %s for eager1::incoming",
-                      sstmac::hw::NetworkMessage::tostr(msg->NetworkMessage::type()));
+    sst_hg_abort_printf("Got bad message type %s for eager1::incoming",
+                      SST::Hg::NetworkMessage::tostr(msg->NetworkMessage::type()));
   }
 }
 

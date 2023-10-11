@@ -50,12 +50,12 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <mpi_api.h>
 //#include <sprockit/debug.h>
 #include <sst/elements/mercury/common/errors.h>
-#include <sst/elements/mercury/common/null_buffer.h>
+//#include <sst/elements/mercury/common/null_buffer.h>
 
 namespace SST::MPI {
 
 MpiQueueRecvRequest::MpiQueueRecvRequest(
-  sstmac::Timestamp start,
+  SST::Hg::Timestamp start,
   MpiRequest* key,
   MpiQueue* queue,
   int count,
@@ -104,7 +104,7 @@ MpiQueueRecvRequest::matches(MpiMessage* msg)
     MpiApi* api = queue_->api();
     int recv_buffer_size = count_ * type_->packed_size();
     if (incoming_bytes > recv_buffer_size){
-      spkt_abort_printf("MPI matching error: incoming message has %d bytes, but matches buffer of too small size %d:\n"
+      sst_hg_abort_printf("MPI matching error: incoming message has %d bytes, but matches buffer of too small size %d:\n"
                         "MPI_Recv(%d,%s,%s,%s,%s) matches\n"
                         "MPI_Send(%d,%s,%d,%s,%s)",
                         incoming_bytes, recv_buffer_size,

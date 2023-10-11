@@ -49,17 +49,27 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/thread.h>
 #//include <sst/elements/mercury/operating_system/process/ftq_scope.h>
 
+//#define do_coll(coll, fxn, ...) \
+//  StartMPICall(fxn); \
+//  auto op = start##coll(#fxn, __VA_ARGS__); \
+//  waitCollective(std::move(op)); \
+//  FinishMPICall(fxn);
+
 #define do_coll(coll, fxn, ...) \
-  StartMPICall(fxn); \
   auto op = start##coll(#fxn, __VA_ARGS__); \
-  waitCollective(std::move(op)); \
-  FinishMPICall(fxn);
+  waitCollective(std::move(op));
+
+//#define start_coll(coll, fxn, ...) \
+//  StartMPICall(fxn); \
+//  auto op = start##coll(#fxn, __VA_ARGS__); \
+//  addImmediateCollective(std::move(op), req); \
+//  FinishMPICall(fxn)
 
 #define start_coll(coll, fxn, ...) \
-  StartMPICall(fxn); \
   auto op = start##coll(#fxn, __VA_ARGS__); \
-  addImmediateCollective(std::move(op), req); \
-  FinishMPICall(fxn)
+  addImmediateCollective(std::move(op), req);
+
+using SST::Iris::sumi::Collective;
 
 namespace SST::MPI {
 
@@ -84,7 +94,7 @@ MpiApi::addImmediateCollective(CollectiveOpBase::ptr&& op, MPI_Request* req)
 }
 
 void
-MpiApi::startMpiCollective(Collective::type_t ty,
+MpiApi::startMpiCollective(Iris::sumi::Collective::type_t ty,
                            const void *sendbuf, void *recvbuf,
                            MPI_Datatype sendtype, MPI_Datatype recvtype,
                            CollectiveOpBase* op)
@@ -98,8 +108,8 @@ MpiApi::startMpiCollective(Collective::type_t ty,
       MpiType* type = typeFromId(recvtype);
       int offset;
       switch(ty){
-        case Collective::gather:
-        case Collective::allgather:
+        case Iris::sumi::Collective::gather:
+        case Iris::sumi::Collective::allgather:
           offset = type->extent() * op->recvcnt * op->comm->rank();
           break;
         default:
@@ -170,10 +180,10 @@ void
 MpiApi::finishCollectiveOp(CollectiveOpBase* op_)
 {
   CollectiveOp* op = static_cast<CollectiveOp*>(op_);
-  mpi_api_debug(sprockit::dbg::mpi_collective,
-                "finishing op on tag %d for collective %s: packed=(%d,%d)",
-                op->tag, Collective::tostr(op->ty),
-                op->packed_send, op->packed_recv);
+//  mpi_api_debug(sprockit::dbg::mpi_collective,
+//                "finishing op on tag %d for collective %s: packed=(%d,%d)",
+//                op->tag, Collective::tostr(op->ty),
+//                op->packed_send, op->packed_recv);
 
   if (op->packed_recv){
     op->recvtype->unpack_recv(op->tmp_recvbuf, op->recvbuf, op->recvcnt);
@@ -188,8 +198,8 @@ void
 MpiApi::finishCollective(CollectiveOpBase* op)
 {
   switch(op->ty){
-    case Collective::donothing:
-      spkt_abort_printf("do nothing collective should not call finishCollective");
+    case Iris::sumi::Collective::donothing:
+      sst_hg_abort_printf("do nothing collective should not call finishCollective");
     case Collective::reduce:
     case Collective::alltoall:
     case Collective::gather:
@@ -241,7 +251,7 @@ MpiApi::waitCollective(CollectiveOpBase::ptr&& op)
   delete req;
 }
 
-CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startAllgather(CollectiveOp *op)
 {
   return engine_->allgather(op->tmp_recvbuf, op->tmp_sendbuf,
@@ -253,11 +263,11 @@ CollectiveOpBase::ptr
 MpiApi::startAllgather(const char* name, MPI_Comm comm, int sendcount, MPI_Datatype sendtype,
                          int recvcount, MPI_Datatype recvtype, const void *sendbuf, void *recvbuf)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s,%s)", name,
-    sendcount, typeStr(sendtype).c_str(),
-    recvcount, typeStr(recvtype).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s,%s)", name,
+//    sendcount, typeStr(sendtype).c_str(),
+//    recvcount, typeStr(recvtype).c_str(),
+//    commStr(comm).c_str());
 
   auto op = CollectiveOp::create(sendcount, recvcount, getComm(comm));
   startMpiCollective(Collective::allgather, sendbuf, recvbuf, sendtype, recvtype, op.get());
@@ -325,7 +335,7 @@ MpiApi::iallgather(int sendcount, MPI_Datatype sendtype,
   return iallgather(NULL, sendcount, sendtype, NULL, recvcount, recvtype, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startAlltoall(CollectiveOp* op)
 {
   return engine_->alltoall(op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
@@ -337,11 +347,11 @@ CollectiveOpBase::ptr
 MpiApi::startAlltoall(const char* name, MPI_Comm comm, int sendcount, MPI_Datatype sendtype,
                       int recvcount, MPI_Datatype recvtype, const void *sendbuf, void *recvbuf)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s,%s)", name,
-    sendcount, typeStr(sendtype).c_str(),
-    recvcount, typeStr(recvtype).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s,%s)", name,
+//    sendcount, typeStr(sendtype).c_str(),
+//    recvcount, typeStr(recvtype).c_str(),
+//    commStr(comm).c_str());
 
   auto op = CollectiveOp::create(sendcount, recvcount, getComm(comm));
   startMpiCollective(Collective::alltoall, sendbuf, recvbuf, sendtype, recvtype, op.get());
@@ -406,10 +416,10 @@ MpiApi::ialltoall(int sendcount, MPI_Datatype sendtype,
                    recvcount, recvtype, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startAllreduce(CollectiveOp* op)
 {
-  reduce_fxn fxn = getCollectiveFunction(op);
+  Iris::sumi::reduce_fxn fxn = getCollectiveFunction(op);
   return engine_->allreduce(op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
                        op->sendtype->packed_size(), op->tag,
                        fxn, queue_->collCqId(), op->comm);
@@ -439,10 +449,10 @@ CollectiveOpBase::ptr
 MpiApi::startAllreduce(const char* name, MPI_Comm comm, int count, MPI_Datatype type,
                        MPI_Op mop, const void* src, void* dst)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%s)", name,
-    count, typeStr(type).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%s)", name,
+//    count, typeStr(type).c_str(),
+//    commStr(comm).c_str());
 
   return startAllreduce(getComm(comm), count, type, mop, src, dst);
 }
@@ -491,7 +501,7 @@ MpiApi::iallreduce(int count, MPI_Datatype type, MPI_Op op,
   return iallreduce(NULL, NULL, count, type, op, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startBarrier(CollectiveOp* op)
 {
   op->ty = Collective::barrier;
@@ -502,8 +512,8 @@ CollectiveOpBase::ptr
 MpiApi::startBarrier(const char* name, MPI_Comm comm)
 {
   auto op = CollectiveOp::create(0, getComm(comm));
-  mpi_api_debug(sprockit::dbg::mpi, "%s(%s) on tag %d",
-    name, commStr(comm).c_str(), int(op->tag));
+//  mpi_api_debug(sprockit::dbg::mpi, "%s(%s) on tag %d",
+//    name, commStr(comm).c_str(), int(op->tag));
   auto* msg = startBarrier(op.get());
   if (msg){
     op->complete = true;
@@ -519,9 +529,9 @@ MpiApi::barrier(MPI_Comm comm)
   auto start_clock = traceClock();
 #endif
 
-  StartMPICall(MPI_Barrier);
+  //StartMPICall(MPI_Barrier);
   waitCollective( startBarrier("MPI_Barrier", comm) );
-  FinishMPICall(MPI_Barrier);
+  //FinishMPICall(MPI_Barrier);
 
 #ifdef SSTMAC_OTF2_ENABLED
   if(OTF2Writer_) {
@@ -535,13 +545,13 @@ MpiApi::barrier(MPI_Comm comm)
 int
 MpiApi::ibarrier(MPI_Comm comm, MPI_Request *req)
 {
-  StartMPICall(MPI_Ibarrier);
+  //StartMPICall(MPI_Ibarrier);
   addImmediateCollective(startBarrier("MPI_Ibarrier", comm), req);
-  FinishMPICall(MPI_Ibarrier);
+  //FinishMPICall(MPI_Ibarrier);
   return MPI_SUCCESS;
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startBcast(CollectiveOp* op)
 {
   void* buf = op->comm->rank() == op->root ? op->tmp_sendbuf : op->tmp_recvbuf;
@@ -553,10 +563,10 @@ MpiApi::startBcast(CollectiveOp* op)
 CollectiveOpBase::ptr
 MpiApi::startBcast(const char* name, MPI_Comm comm, int count, MPI_Datatype datatype, int root, void *buffer)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s)", name,
-    count, typeStr(datatype).c_str(),
-    root, commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s)", name,
+//    count, typeStr(datatype).c_str(),
+//    root, commStr(comm).c_str());
 
   auto op = CollectiveOp::create(count, getComm(comm));
   void* sendbuf, *recvbuf;
@@ -625,7 +635,7 @@ MpiApi::ibcast(int count, MPI_Datatype datatype, int root,
   return ibcast(NULL, count, datatype, root, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startGather(CollectiveOp* op)
 {
   return engine_->gather(op->root, op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
@@ -637,11 +647,11 @@ CollectiveOpBase::ptr
 MpiApi::startGather(const char* name, MPI_Comm comm, int sendcount, MPI_Datatype sendtype, int root,
                       int recvcount, MPI_Datatype recvtype, const void *sendbuf, void *recvbuf)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s,%s)", name,
-    sendcount, typeStr(sendtype).c_str(),
-    recvcount, typeStr(recvtype).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s,%s)", name,
+//    sendcount, typeStr(sendtype).c_str(),
+//    recvcount, typeStr(recvtype).c_str(),
+//    commStr(comm).c_str());
 
   if (sendbuf == MPI_IN_PLACE){
     if (recvbuf){
@@ -719,19 +729,19 @@ MpiApi::igather(int sendcount, MPI_Datatype sendtype,
                  recvcount, recvtype, root, comm, req);
 }
 
-reduce_fxn
+Iris::sumi::reduce_fxn
 MpiApi::getCollectiveFunction(CollectiveOpBase* op)
 {
   if (op->op >= first_custom_op_id){
     auto iter = custom_ops_.find(op->op);
     if (iter == custom_ops_.end()){
-      spkt_throw_printf(sprockit::ValueError,
+      sst_hg_throw_printf(SST::Hg::ValueError,
                         "Got invalid MPI_Op %d",
                         op->op);
    }
     MPI_User_function* mpifxn = iter->second;
     MPI_Datatype dtype = op->sendtype->id;
-    reduce_fxn fxn = ([=](void* dst, const void* src, int count){
+    Iris::sumi::reduce_fxn fxn = ([=](void* dst, const void* src, int count){
       MPI_Datatype copy_type = dtype;
       (*mpifxn)(const_cast<void*>(src), dst, &count, &copy_type);
     });
@@ -745,10 +755,10 @@ MpiApi::getCollectiveFunction(CollectiveOpBase* op)
   }
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startReduce(CollectiveOp* op)
 {
-  reduce_fxn fxn = getCollectiveFunction(op);
+  Iris::sumi::reduce_fxn fxn = getCollectiveFunction(op);
   return engine_->reduce(op->root, op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
                     op->sendtype->packed_size(), op->tag,
                     fxn, queue_->collCqId(), op->comm);
@@ -758,10 +768,10 @@ CollectiveOpBase::ptr
 MpiApi::startReduce(const char* name, MPI_Comm comm, int count, MPI_Datatype type, int root,
                       MPI_Op mop, const void* src, void* dst)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s)", name,
-    count, typeStr(type).c_str(),
-    root,  commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s)", name,
+//    count, typeStr(type).c_str(),
+//    root,  commStr(comm).c_str());
 
   auto op = CollectiveOp::create(count, getComm(comm));
   op->root = root;
@@ -827,12 +837,12 @@ MpiApi::ireduce(int count, MPI_Datatype type, MPI_Op op, int root, MPI_Comm comm
   return ireduce(NULL, NULL, count, type, op, root, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startReduceScatter(CollectiveOp* op)
 {
-  sprockit::abort("sumi::reduce_scatter");
+  SST::Hg::abort("sumi::reduce_scatter");
 
-  reduce_fxn fxn = getCollectiveFunction(op);
+  Iris::sumi::reduce_fxn fxn = getCollectiveFunction(op);
   return nullptr;
   //transport::allreduce(op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
   //                     op->sendtype->packed_size(), op->tag,
@@ -844,10 +854,10 @@ CollectiveOpBase::ptr
 MpiApi::startReduceScatter(const char*  /*name*/, MPI_Comm  /*comm*/, const int*  /*recvcounts*/,
                            MPI_Datatype type, MPI_Op mop, const void* src, void* dst)
 {
-  sprockit::abort("sumi::reduce_scatter");
+  SST::Hg::abort("sumi::reduce_scatter");
 
   CollectiveOp::ptr op;
-  startMpiCollective(Collective::reduce_scatter, src, dst, type, type, op.get());
+  startMpiCollective(Iris::sumi::Collective::reduce_scatter, src, dst, type, type, op.get());
   auto* msg = startReduceScatter(op.get());
   if (msg){
     op->complete = true;
@@ -905,7 +915,7 @@ CollectiveOpBase::ptr
 MpiApi::startReduceScatterBlock(const char*  /*name*/, MPI_Comm  /*comm*/, int  /*count*/, MPI_Datatype type,
                                     MPI_Op mop, const void* src, void* dst)
 {
-  sprockit::abort("sumi::reduce_scatter: not implemented");
+  SST::Hg::abort("sumi::reduce_scatter: not implemented");
 
   CollectiveOp::ptr op;
   startMpiCollective(Collective::reduce_scatter, src, dst, type, type, op.get());
@@ -951,10 +961,10 @@ MpiApi::ireduceScatterBlock(int recvcnt, MPI_Datatype type,
   return ireduceScatterBlock(NULL, NULL, recvcnt, type, op, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startScan(CollectiveOp* op)
 {
-  reduce_fxn fxn = getCollectiveFunction(op);
+  Iris::sumi::reduce_fxn fxn = getCollectiveFunction(op);
   return engine_->scan(op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
                   op->sendtype->packed_size(), op->tag,
                   fxn, queue_->collCqId(), op->comm);
@@ -964,10 +974,10 @@ CollectiveOpBase::ptr
 MpiApi::startScan(const char* name, MPI_Comm comm, int count, MPI_Datatype type,
                   MPI_Op mop, const void* src, void* dst)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%s)", name,
-    count, typeStr(type).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%s)", name,
+//    count, typeStr(type).c_str(),
+//    commStr(comm).c_str());
 
   auto op = CollectiveOp::create(count, getComm(comm));
   if (src == MPI_IN_PLACE){
@@ -1023,7 +1033,7 @@ MpiApi::iscan(int count, MPI_Datatype type, MPI_Op op,
   return iscan(NULL, NULL, count, type, op, comm, req);
 }
 
-sumi::CollectiveDoneMessage*
+Iris::sumi::CollectiveDoneMessage*
 MpiApi::startScatter(CollectiveOp* op)
 {
   return engine_->scatter(op->root, op->tmp_recvbuf, op->tmp_sendbuf, op->sendcnt,
@@ -1035,11 +1045,11 @@ CollectiveOpBase::ptr
 MpiApi::startScatter(const char* name, MPI_Comm comm, int sendcount, MPI_Datatype sendtype, int root,
                      int recvcount, MPI_Datatype recvtype, const void *sendbuf, void *recvbuf)
 {
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
-    "%s(%d,%s,%d,%s)", name,
-    sendcount, typeStr(sendtype).c_str(),
-    recvcount, typeStr(recvtype).c_str(),
-    commStr(comm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_collective,
+//    "%s(%d,%s,%d,%s)", name,
+//    sendcount, typeStr(sendtype).c_str(),
+//    recvcount, typeStr(recvtype).c_str(),
+//    commStr(comm).c_str());
 
   auto op = CollectiveOp::create(sendcount, recvcount, getComm(comm));
 

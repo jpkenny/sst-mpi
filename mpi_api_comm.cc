@@ -50,9 +50,12 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/thread.h>
 //#include <sstmac/software/process/ftq_scope.h>
 
-#define StartCommCall(fxn,comm) \
-  StartMPICall(fxn); \
-  mpi_api_debug(sprockit::dbg::mpi, "%s(%s) start", #fxn, commStr(comm).c_str())
+//#define StartCommCall(fxn,comm) \
+//  StartMPICall(fxn); \
+//  mpi_api_debug(sprockit::dbg::mpi, "%s(%s) start", #fxn, commStr(comm).c_str())
+
+#define StartCommCall(fxn,comm)
+#define FinishMPICall(fxn)
 
 namespace SST::MPI {
 
@@ -68,8 +71,8 @@ MpiApi::commDup(MPI_Comm input, MPI_Comm *output)
   MpiComm* inputPtr = getComm(input);
   MpiComm* outputPtr = comm_factory_.comm_dup(inputPtr);
   addCommPtr(outputPtr, output);
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_dup(%s,*%s) finish",
-                commStr(input).c_str(), commStr(*output).c_str());
+  //mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_dup(%s,*%s) finish",
+  //              commStr(input).c_str(), commStr(*output).c_str());
   FinishMPICall(MPI_Comm_dup);
 
 #ifdef SSTMAC_OTF2_ENABLED
@@ -91,8 +94,8 @@ MpiApi::commCreateGroup(MPI_Comm comm, MPI_Group group, int  /*tag*/, MPI_Comm *
   MpiGroup* groupPtr = getGroup(group);
   MpiComm* outputPtr = comm_factory_.commCreateGroup(inputPtr, groupPtr);
   addCommPtr(outputPtr, newcomm);
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create_group(%s,*%s) finish",
-                commStr(comm).c_str(), commStr(*newcomm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create_group(%s,*%s) finish",
+//                commStr(comm).c_str(), commStr(*newcomm).c_str());
   FinishMPICall(MPI_Comm_create_group);
 
 #ifdef SSTMAC_OTF2_ENABLED
@@ -123,8 +126,8 @@ MpiApi::commCreate(MPI_Comm input, MPI_Group group, MPI_Comm *output)
   MpiGroup* groupPtr = getGroup(group);
   MpiComm* outputPtr = comm_factory_.commCreate(inputPtr, groupPtr);
   addCommPtr(outputPtr, output);
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create(%s,%d,*%s)",
-                commStr(input).c_str(), group, commStr(*output).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create(%s,%d,*%s)",
+//                commStr(input).c_str(), group, commStr(*output).c_str());
   FinishMPICall(MPI_Comm_create);
 
 #ifdef SSTMAC_OTF2_ENABLED
@@ -140,8 +143,8 @@ MpiApi::commCreate(MPI_Comm input, MPI_Group group, MPI_Comm *output)
 void
 MpiApi::commCreateWithId(MPI_Comm input, MPI_Group group, MPI_Comm new_comm)
 {
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create_with_id(%s,%d,%d)",
-                commStr(input).c_str(), group, new_comm);
+//  mpi_api_debug(sprockit::dbg::mpi, "MPI_Comm_create_with_id(%s,%d,%d)",
+//                commStr(input).c_str(), group, new_comm);
   MpiGroup* groupPtr = getGroup(group);
   MpiComm* inputPtr = getComm(input);
   int new_rank = groupPtr->rankOfTask(inputPtr->myTask());
@@ -241,7 +244,7 @@ MpiApi::cartShift(MPI_Comm comm, int direction, int disp, int *rank_source,
 int
 MpiApi::cartCoords(MPI_Comm comm, int rank, int  /*maxdims*/, int coords[])
 {
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Cart_coords(...)");
+  //mpi_api_debug(sprockit::dbg::mpi, "MPI_Cart_coords(...)");
   MpiComm* incommPtr = getComm(comm);
   MpiCommCart* c = safe_cast(MpiCommCart, incommPtr,
     "mpi_api::cart_coords: mpi comm did not cast to mpi_comm_cart");
@@ -262,15 +265,15 @@ MpiApi::commSplit(MPI_Comm incomm, int color, int key, MPI_Comm *outcomm)
   MpiComm* outcommPtr = comm_factory_.commSplit(incommPtr, color, key);
 
   addCommPtr(outcommPtr, outcomm);
-  mpi_api_debug(sprockit::dbg::mpi,
-      "MPI_Comm_split(%s,%d,%d,*%s) exit",
-      commStr(incomm).c_str(), color, key, commStr(*outcomm).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//      "MPI_Comm_split(%s,%d,%d,*%s) exit",
+//      commStr(incomm).c_str(), color, key, commStr(*outcomm).c_str());
 
   //but also assign an id to the underlying group
   if (outcommPtr->id() != MPI_COMM_NULL){
     outcommPtr->group()->setId(group_counter_++);
     if (smp_optimize_){
-      outcommPtr->createSmpCommunicator(smp_neighbors_, engine(), Message::default_cq);
+      outcommPtr->createSmpCommunicator(smp_neighbors_, engine(), Iris::sumi::Message::default_cq);
     }
   }
 

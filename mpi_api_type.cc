@@ -47,11 +47,10 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/components/operating_system.h>
 #include <climits>
 
-namespace sstmac {
-namespace sw {
+namespace SST::Hg {
 extern void apiLock();
 extern void apiUnlock();
-} }
+}
 
 namespace SST::MPI {
 
@@ -134,7 +133,7 @@ struct ldcomplex {
 void
 MpiApi::commitBuiltinTypes()
 {
-  sstmac::sw::apiLock();
+  SST::Hg::apiLock();
 
   bool need_init = !MpiType::mpi_null->committed();
 
@@ -244,7 +243,7 @@ MpiApi::commitBuiltinTypes()
   precommit_builtin(64);
 
 
-  sstmac::sw::apiUnlock();
+  SST::Hg::apiUnlock();
 
 }
 
@@ -263,9 +262,9 @@ MpiApi::packSize(int incount, MPI_Datatype datatype, MPI_Comm  /*comm*/, int *si
 int
 MpiApi::typeSetName(MPI_Datatype id, const char* name)
 {
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_set_name(%s,%s)",
-                typeStr(id).c_str(), name);
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_set_name(%s,%s)",
+//                typeStr(id).c_str(), name);
   auto it = known_types_.find(id);
   if (it == known_types_.end()){
       return MPI_ERR_TYPE;
@@ -278,9 +277,9 @@ MpiApi::typeSetName(MPI_Datatype id, const char* name)
 int
 MpiApi::typeGetName(MPI_Datatype id, char* name, int* resultlen)
 {
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_get_name(%s)",
-                typeStr(id).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_get_name(%s)",
+//                typeStr(id).c_str());
   auto it = known_types_.find(id);
   if (it == known_types_.end()){
       return MPI_ERR_TYPE;
@@ -296,7 +295,7 @@ int
 MpiApi::opCreate(MPI_User_function *user_fn, int commute, MPI_Op *op)
 {
   if (!commute){
-    spkt_throw_printf(sprockit::UnimplementedError,
+    sst_hg_throw_printf(SST::Hg::UnimplementedError,
                       "mpi_api::op_create: non-commutative operations");
   }
   *op = next_op_id_++;
@@ -324,10 +323,10 @@ MpiApi::doTypeHvector(int count, int blocklength, MPI_Aint stride,
 
   allocateTypeId(new_type_obj);
   *new_type = new_type_obj->id;
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_vector(%d,%d,%d,%s,*%s)",
-                count, blocklength, stride,
-                typeStr(old->id).c_str(), typeStr(*new_type).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_vector(%d,%d,%d,%s,*%s)",
+//                count, blocklength, stride,
+//                typeStr(old->id).c_str(), typeStr(*new_type).c_str());
 
   allocatedTypes_[new_type_obj->id] = MpiType::ptr(new_type_obj);
 
@@ -401,9 +400,9 @@ MpiApi::doTypeHindexed(int count, const int lens[],
   allocateTypeId(out_type_obj);
   *outtype = out_type_obj->id;
 
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_indexed(%d,<...>,<...>,%s,*%s)",
-                count, typeStr(in_type_obj->id).c_str(), typeStr(*outtype).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_indexed(%d,<...>,<...>,%s,*%s)",
+//                count, typeStr(in_type_obj->id).c_str(), typeStr(*outtype).c_str());
 
   allocatedTypes_[out_type_obj->id] = MpiType::ptr(out_type_obj);
 
@@ -478,7 +477,7 @@ void
 MpiApi::commitBuiltinType(MpiType* type, MPI_Datatype id)
 {
   if (known_types_.find(id) != known_types_.end()){
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
       "mpi_api::precommit_type: %d already exists", id);
   }
   type->id = id;
@@ -576,9 +575,9 @@ MpiApi::typeCreateStruct(const int count, const int* blocklens,
   allocateTypeId(new_type_obj);
   *newtype = new_type_obj->id;
 
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_struct(%d,<...>,<...>,<...>,*%s)",
-                count, typeStr(*newtype).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_struct(%d,<...>,<...>,<...>,*%s)",
+//                count, typeStr(*newtype).c_str());
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -611,9 +610,9 @@ MpiApi::typeDup(MPI_Datatype intype, MPI_Datatype* outtype)
   MpiType* new_type_obj = typeFromId(intype);
   allocateTypeId(new_type_obj);
   *outtype = new_type_obj->id;
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_dup(%s,*%s)",
-                typeStr(intype).c_str(), typeStr(*outtype).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_dup(%s,*%s)",
+//                typeStr(intype).c_str(), typeStr(*outtype).c_str());
   return MPI_SUCCESS;
 }
 
@@ -624,9 +623,9 @@ MpiApi::typeDup(MPI_Datatype intype, MPI_Datatype* outtype)
 int
 MpiApi::typeFree(MPI_Datatype* type)
 {
-  mpi_api_debug(sprockit::dbg::mpi,
-                "MPI_Type_free(%s)",
-                typeStr(*type).c_str());
+//  mpi_api_debug(sprockit::dbg::mpi,
+//                "MPI_Type_free(%s)",
+//                typeStr(*type).c_str());
 
   //these maps are separated because all known types
   //are not necessarily allocated by this rank
@@ -644,7 +643,7 @@ MpiApi::typeFromId(MPI_Datatype id)
 {
   auto it = known_types_.find(id);
   if (it == known_types_.end()){
-    spkt_throw_printf(sprockit::InvalidKeyError,
+    sst_hg_throw_printf(SST::Hg::InvalidKeyError,
         "mpi_api: unknown type id %d",
         int(id));
   }

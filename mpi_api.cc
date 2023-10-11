@@ -50,7 +50,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <iomanip>
 #include <ctime>
 
-#include <sst/elements/mercury/common/runtime.h>
+//#include <sst/elements/mercury/common/runtime.h>
 
 #include <mpi_queue/mpi_queue.h>
 
@@ -66,7 +66,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/app.h>
 #include <sst/elements/mercury/components/operating_system.h>
 //#include <sstmac/software/process/ftq_scope.h>
-#include <sst/elements/mercury/operating_system/launch/job_launcher.h>
+//#include <sst/elements/mercury/operating_system/launch/job_launcher.h>
 
 
 #include <mpi_protocol/mpi_protocol.h>
@@ -79,46 +79,46 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sumi-mpi/otf2_output_stat.h>
 #endif
 
-#include <sprockit/errors.h>
-#include <sprockit/statics.h>
-#include <sprockit/output.h>
-#include <sprockit/util.h>
-#include <sprockit/sim_parameters.h>
-#include <sprockit/keyword_registration.h>
+#include <sst/elements/mercury/common/errors.h>
+#//include <sprockit/statics.h>
+//#include <sprockit/output.h>
+#include <sst/elements/mercury/common/util.h>
+#include <sst/core/params.h>
+//#include <sstmac/keyword_registration.h>
 
 #ifdef SSTMAC_OTF2_ENABLED
 #include <sumi-mpi/otf2_output_stat.h>
 #endif
 
 
-MakeDebugSlot(mpi_sync)
-MakeDebugSlot(mpi_finalize)
-RegisterKeywords(
-{ "iprobe_delay", "the delay incurred each time MPI_Iprobe is called" },
-{ "dump_comm_times", "dump communication time statistics" },
-{ "otf2_dir_basename", "Enables OTF2 and combines this parameter with a timestamp to name the archive"}
-);
+//MakeDebugSlot(mpi_sync)
+//MakeDebugSlot(mpi_finalize)
+//RegisterKeywords(
+//{ "iprobe_delay", "the delay incurred each time MPI_Iprobe is called" },
+//{ "dump_comm_times", "dump communication time statistics" },
+//{ "otf2_dir_basename", "Enables OTF2 and combines this parameter with a timestamp to name the archive"}
+//);
 
-sprockit::StaticNamespaceRegister mpi_ns_reg("mpi");
-sprockit::StaticNamespaceRegister queue_ns_reg("queue");
+//sprockit::StaticNamespaceRegister mpi_ns_reg("mpi");
+//sprockit::StaticNamespaceRegister queue_ns_reg("queue");
 
 namespace SST::MPI {
 
-static sprockit::NeedDeletestatics<MpiApi> del_statics;
-sstmac::FTQTag MpiApi::mpi_tag("MPI", 1);
+//static sprockit::NeedDeletestatics<MpiApi> del_statics;
+//sstmac::FTQTag MpiApi::mpi_tag("MPI", 1);
 
-MpiApi* sstmac_mpi()
+MpiApi* sst_mpi()
 {
-  sstmac::sw::Thread* t = sstmac::sw::OperatingSystem::currentThread();
+  SST::Hg::Thread* t = SST::Hg::OperatingSystem::currentThread();
   return t->getApi<MpiApi>("mpi");
 }
 
 //
 // Build a new mpiapi.
 //
-MpiApi::MpiApi(SST::Params& params, sstmac::sw::App* app,
+MpiApi::MpiApi(SST::Params& params, SST::Hg::App* app,
                SST::Component* comp) :
-  sumi::SimTransport(params, app, comp),
+  SST::Iris::sumi::SimTransport(params, app, comp),
   queue_(nullptr),
   next_type_id_(0),
   next_op_id_(first_custom_op_id),
@@ -134,7 +134,7 @@ MpiApi::MpiApi(SST::Params& params, sstmac::sw::App* app,
   req_counter_(0),
   generate_ids_(true)
 {
-  if (!engine_) engine_ = new CollectiveEngine(params, this);
+  if (!engine_) engine_ = new Iris::sumi::CollectiveEngine(params, this);
 
   queue_ = new MpiQueue(params, app->sid().task_, this, engine_);
 
@@ -143,12 +143,6 @@ MpiApi::MpiApi(SST::Params& params, sstmac::sw::App* app,
 
   double test_delay_s = params.find<SST::UnitAlgebra>("test_delay", "1us").getValue().toDouble();
   test_delay_us_ = test_delay_s * 1e6;
-
-#if !SSTMAC_INTEGRATED_SST_CORE
-  std::string subname = sprockit::sprintf("app%d.rank%d", app->aid(), app->tid());
-  delays_ = app->os()->node()->registerMultiStatistic<int,int,int,int,uint64_t,uint64_t,
-      double,double,double,double,double,double,double,double,double>(params, "delays", subname);
-#endif
 
 #ifdef SSTMAC_OTF2_ENABLED
 #if !SSTMAC_INTEGRATED_SST_CORE
@@ -209,7 +203,7 @@ int
 MpiApi::abort(MPI_Comm  /*comm*/, int errcode)
 {
 
-  spkt_throw_printf(sprockit::ValueError,
+  sst_hg_throw_printf(SST::Hg::ValueError,
     "MPI rank %d exited with code %d", rank_, errcode);
   return MPI_SUCCESS;
 }
@@ -229,18 +223,18 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 #endif
 
   if (status_ == is_initialized){
-    sprockit::abort("MPI_Init cannot be called twice");
+    SST::Hg::abort("MPI_Init cannot be called twice");
   }
 
-  StartMPICall(MPI_Init);
+  //StartMPICall(MPI_Init);
 
-  sumi::SimTransport::init();
+  Iris::sumi::SimTransport::init();
 
   comm_factory_.init(rank_, nproc_);
 
   worldcomm_ = comm_factory_.world();
   if (smp_optimize_){
-    worldcomm_->createSmpCommunicator(smp_neighbors_, engine(), Message::default_cq);
+    worldcomm_->createSmpCommunicator(smp_neighbors_, engine(), Iris::sumi::Message::default_cq);
   }
 
   selfcomm_ = comm_factory_.self();
@@ -249,7 +243,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
   grp_map_[MPI_GROUP_WORLD] = worldcomm_->group();
   grp_map_[MPI_GROUP_SELF] = selfcomm_->group();
 
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Init()");
+  //mpi_api_debug(sprockit::dbg::mpi, "MPI_Init()");
 
   /** Make sure all the default types are known */
   commitBuiltinTypes();
@@ -259,7 +253,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
   queue_->init();
 
   crossed_comm_world_barrier_ = true;
-  endAPICall();
+  //endAPICall();
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -267,7 +261,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
   }
 #endif
 
-  FinishMPICall(MPI_Init);
+  //FinishMPICall(MPI_Init);
 
   return MPI_SUCCESS;
 }
@@ -276,7 +270,7 @@ void
 MpiApi::checkInit()
 {
   if (status_ != is_initialized){
-    spkt_abort_printf("MPI Rank %d calling functions before calling MPI_Init", rank_);
+    sst_hg_abort_printf("MPI Rank %d calling functions before calling MPI_Init", rank_);
   }
 }
 
@@ -290,12 +284,12 @@ MpiApi::finalize()
   auto start_clock = traceClock();
 #endif
 
-  StartMPICall(MPI_Finalize);
+  //StartMPICall(MPI_Finalize);
 
   auto op = startBarrier("MPI_Finalize", MPI_COMM_WORLD);
   waitCollective(std::move(op));
 
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Finalize()");
+  //mpi_api_debug(sprockit::dbg::mpi, "MPI_Finalize()");
 
 #ifdef SSTMAC_OTF2_ENABLED
   if (OTF2Writer_){
@@ -308,14 +302,14 @@ MpiApi::finalize()
 
   int rank = commWorld()->rank();
   if (rank == 0) {
-    debug_printf(sprockit::dbg::mpi_finalize,
-      "MPI_Finalize passed on app %d", sid().app_);
+//    debug_printf(sprockit::dbg::mpi_finalize,
+//      "MPI_Finalize passed on app %d", sid().app_);
   }
 
   engine_->cleanUp();
   SimTransport::finish();
 
-  endAPICall();
+  //endAPICall();
 
   return MPI_SUCCESS;
 }
@@ -326,7 +320,7 @@ MpiApi::finalize()
 double
 MpiApi::wtime()
 {
-  StartMPICall(MPI_Wtime);
+  //StartMPICall(MPI_Wtime);
   return now().sec();
 }
 
@@ -368,15 +362,15 @@ MpiApi::typeStr(MPI_Datatype mid)
   switch(ty->type())
   {
     case MpiType::PRIM:
-      return sprockit::sprintf("%s=%d", ty->label.c_str(), mid);
+      return SST::Hg::sprintf("%s=%d", ty->label.c_str(), mid);
     case MpiType::PAIR:
-      return sprockit::sprintf("PAIR=%d", mid);
+      return SST::Hg::sprintf("PAIR=%d", mid);
     case MpiType::VEC:
-      return sprockit::sprintf("VEC=%d", mid);
+      return SST::Hg::sprintf("VEC=%d", mid);
     case MpiType::IND:
-      return sprockit::sprintf("IND=%d", mid);
+      return SST::Hg::sprintf("IND=%d", mid);
     case MpiType::NONE:
-      return sprockit::sprintf("NONE=%d", mid);
+      return SST::Hg::sprintf("NONE=%d", mid);
     default:
       return "UNKNOWN TYPE";
   }
@@ -392,7 +386,7 @@ MpiApi::commStr(MPI_Comm comm)
   } else if (comm == MpiComm::comm_null->id()){
     return "MPI_COMM_NULL";
   } else {
-    return sprockit::sprintf("COMM=%d", int(comm));
+    return SST::Hg::sprintf("COMM=%d", int(comm));
   }
 }
 
@@ -406,7 +400,7 @@ MpiApi::commStr(MpiComm* comm)
   } else if (comm == MpiComm::comm_null){
     return "MPI_COMM_NULL";
   } else {
-    return sprockit::sprintf("COMM=%d", int(comm->id()));
+    return SST::Hg::sprintf("COMM=%d", int(comm->id()));
   }
 }
 
@@ -416,7 +410,7 @@ MpiApi::tagStr(int tag)
   if (tag==MPI_ANY_TAG){
     return "int_ANY";
   } else {
-    return sprockit::sprintf("%d", int(tag));
+    return SST::Hg::sprintf("%d", int(tag));
   }
 }
 
@@ -426,7 +420,7 @@ MpiApi::srcStr(int id)
   if (id == MPI_ANY_SOURCE){
     return "MPI_SOURCE_ANY";
   } else {
-    return sprockit::sprintf("%d", int(id));
+    return SST::Hg::sprintf("%d", int(id));
   }
 }
 
@@ -436,7 +430,7 @@ MpiApi::srcStr(MpiComm* comm, int id)
   if (id == MPI_ANY_SOURCE){
     return "MPI_SOURCE_ANY";
   } else {
-    return sprockit::sprintf("%d:%d", int(id), int(comm->peerTask(id)));
+    return SST::Hg::sprintf("%d:%d", int(id), int(comm->peerTask(id)));
   }
 }
 
@@ -446,10 +440,10 @@ MpiApi::getComm(MPI_Comm comm)
   auto it = comm_map_.find(comm);
   if (it == comm_map_.end()) {
     if (comm == MPI_COMM_WORLD){
-      cerrn << "Could not find MPI_COMM_WORLD! "
+      std::cerr << "Could not find MPI_COMM_WORLD! "
             << "Are you sure you called MPI_Init" << std::endl;
     }
-    spkt_throw_printf(sprockit::SpktError,
+    sst_hg_throw_printf(SST::Hg::HgError,
         "could not find mpi communicator %d for rank %d",
         comm, int(rank_));
   }
@@ -461,7 +455,7 @@ MpiApi::getGroup(MPI_Group grp)
 {
   auto it = grp_map_.find(grp);
   if (it == grp_map_.end()) {
-    spkt_abort_printf("could not find mpi group %d for rank %d",
+    sst_hg_abort_printf("could not find mpi group %d for rank %d",
         grp, int(rank_));
   }
   return it->second;
@@ -489,7 +483,7 @@ MpiApi::getRequest(MPI_Request req)
 
   auto it = req_map_.find(req);
   if (it == req_map_.end()) {
-    spkt_throw_printf(sprockit::SpktError,
+    sst_hg_throw_printf(SST::Hg::HgError,
         "could not find mpi request %d for rank %d",
         req, int(rank_));
   }
@@ -513,7 +507,7 @@ MpiApi::eraseCommPtr(MPI_Comm comm)
   if (comm != MPI_COMM_WORLD && comm != MPI_COMM_SELF && comm != MPI_COMM_NULL) {
     comm_ptr_map::iterator it = comm_map_.find(comm);
     if (it == comm_map_.end()) {
-      spkt_throw_printf(sprockit::SpktError,
+      sst_hg_throw_printf(SST::Hg::HgError,
         "could not find mpi communicator %d for rank %d",
         comm, int(rank_));
     }
@@ -543,7 +537,7 @@ MpiApi::eraseGroupPtr(MPI_Group grp)
       && grp != MPI_GROUP_SELF) {
     group_ptr_map::iterator it = grp_map_.find(grp);
     if (it == grp_map_.end()) {
-      spkt_throw_printf(sprockit::SpktError,
+      sst_hg_throw_printf(SST::Hg::HgError,
         "could not find mpi group %d for rank %d",
         grp, int(rank_));
     }
@@ -563,7 +557,7 @@ MpiApi::eraseRequestPtr(MPI_Request req)
 {
   req_ptr_map::iterator it = req_map_.find(req);
   if (it == req_map_.end()) {
-    spkt_throw_printf(sprockit::SpktError,
+    sst_hg_throw_printf(SST::Hg::HgError,
         "could not find mpi request %d for rank %d",
         req, int(rank_));
   }
@@ -575,7 +569,7 @@ void
 MpiApi::checkKey(int key)
 {
   if (keyvals_.find(key) == keyvals_.end()) {
-    spkt_abort_printf("mpi_api::check_key: could not find keyval %d in key_map", key);
+    sst_hg_abort_printf("mpi_api::check_key: could not find keyval %d in key_map", key);
   }
 }
 
@@ -589,49 +583,20 @@ MpiApi::errorString(int  /*errorcode*/, char *str, int *resultlen)
   return MPI_SUCCESS;
 }
 
-CallGraphCreateTag(idle);
-CallGraphCreateTag(active);
+//CallGraphCreateTag(idle);
+//CallGraphCreateTag(active);
 
 void
-MpiApi::logMessageDelay( SSTMAC_MAYBE_UNUSED Message *msg, SSTMAC_MAYBE_UNUSED
-    uint64_t bytes, SSTMAC_MAYBE_UNUSED int stage, SSTMAC_MAYBE_UNUSED
-    sstmac::TimeDelta sync_delay, SSTMAC_MAYBE_UNUSED sstmac::TimeDelta
-    active_delay, SSTMAC_MAYBE_UNUSED sstmac::TimeDelta time_since_quiesce)
+MpiApi::logMessageDelay(  Iris::sumi::Message *msg,
+    uint64_t bytes,  int stage,
+    SST::Hg::TimeDelta sync_delay,  SST::Hg::TimeDelta
+    active_delay,  SST::Hg::TimeDelta time_since_quiesce)
 {
-#if !SSTMAC_INTEGRATED_SST_CORE
-  current_call_.idle += sync_delay;
-
-  if (crossed_comm_world_barrier_){
-    delays_->addData(msg->sender(), msg->recver(), msg->classType(), stage, bytes,
-      msg->flowId(),
-      msg->sendSyncDelay().sec(), //the time between send arriving and recver matching
-      msg->recvSyncDelay().sec(), //the time between recver posting and send matching
-      msg->injectionDelay().sec(), //the congestion delay on injection
-      msg->congestionDelay().sec(), //the congestion delay on network
-      msg->minDelay().sec(), //the minimum delay the message could have had with no congestion
-      sync_delay.sec(), //the delay due to sync actually seen by application (not overlapped)
-      active_delay.sec(), //the delay due to network actually seen by application
-      time_since_quiesce.sec(),
-      now().sec()
-    ); //how long since the last "quiet" network state
-  }
-#endif
 }
 
 void
 MpiApi::finishCurrentMpiCall()
 {
-#if !SSTMAC_INTEGRATED_SST_CORE
-  if (current_call_.idle.ticks()){
-    auto* thr = parent_app_->os()->activeThread();
-    if (thr->callGraph()){
-      mpi_api_debug(sprockit::dbg::mpi_sync,
-             "reassigning %llu ticks to idle", current_call_.idle.ticks());
-      thr->callGraph()->reassign(CallGraphTag(idle), current_call_.idle.ticks(), thr);
-      current_call_.idle = sstmac::TimeDelta(); //zero for next guy
-    }
-  }
-#endif
 }
 
 #define enumcase(x) case x: return #x
@@ -888,7 +853,7 @@ MPI_Call::ID_str(MPI_function func)
   case Call_ID_MPI_Win_get_errhandler: return "MPI_Win_get_errhandler";
   case Call_ID_MPI_Win_set_errhandler: return "MPI_Win_set_errhandler";
   default: 
-   spkt_abort_printf("Bad MPI Call ID %d\n", func);
+   sst_hg_abort_printf("Bad MPI Call ID %d\n", func);
    return "Unknown or missing MPI function";
   }
 }
@@ -896,6 +861,6 @@ MPI_Call::ID_str(MPI_function func)
 }
 
 extern "C" void sst_gdb_print_rank(){
-  auto api = sumi::sstmac_mpi();
+  auto api = SST::MPI::sst_mpi();
   std::cerr << "Current rank is " << api->rank() << std::endl;
 }

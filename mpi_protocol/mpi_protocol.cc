@@ -69,13 +69,13 @@ MpiProtocol::fillSendBuffer(int count, void* buffer, MpiType* typeobj)
 }
 
 void
-MpiProtocol::logRecvDelay(int stage, sstmac::TimeDelta timeSinceQuiesce,
+MpiProtocol::logRecvDelay(int stage, SST::Hg::TimeDelta timeSinceQuiesce,
                           MpiMessage* msg, MpiQueueRecvRequest* req)
 {
-  sstmac::TimeDelta active_delay;
-  sstmac::TimeDelta sync_delay;
+  SST::Hg::TimeDelta active_delay;
+  SST::Hg::TimeDelta sync_delay;
   if (req->req()->activeWait()){
-    sstmac::Timestamp wait_start = req->req()->waitStart();
+    SST::Hg::Timestamp wait_start = req->req()->waitStart();
     active_delay = mpi_->activeDelay(wait_start);
     if (stage == 0 && msg->timeArrived() > wait_start){
       sync_delay = msg->timeArrived() - wait_start;
@@ -90,13 +90,13 @@ DirectPut::~DirectPut()
 }
 
 void
-DirectPut::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId tid, int count, MpiType* type,
+DirectPut::start(void* buffer, int src_rank, int dst_rank, SST::Hg::TaskId tid, int count, MpiType* type,
                  int tag, MPI_Comm comm, int seq_id, MpiRequest* req)
 {
   int qos = 0;
   auto* msg = mpi_->rdmaPut<MpiMessage>(tid, count*type->packed_size(), nullptr, nullptr,
                 queue_->pt2ptCqId(), queue_->pt2ptCqId(),
-                sumi::Message::pt2pt, qos,
+                Iris::sumi::Message::pt2pt, qos,
                 src_rank, dst_rank, type->id, tag, comm, seq_id, count, type->packed_size(),
                 buffer, DIRECT_PUT);
 
@@ -108,10 +108,10 @@ DirectPut::start(void* buffer, int src_rank, int dst_rank, sstmac::sw::TaskId ti
 void
 DirectPut::incomingAck(MpiMessage *msg)
 {
-  mpi_queue_protocol_debug("RDMA get incoming ack %s", msg->toString().c_str());
+  //mpi_queue_protocol_debug("RDMA get incoming ack %s", msg->toString().c_str());
   auto iter = send_flows_.find(msg->flowId());
   if (iter == send_flows_.end()){
-    spkt_abort_printf("could not find matching ack for %s", msg->toString().c_str());
+    sst_hg_abort_printf("could not find matching ack for %s", msg->toString().c_str());
   }
 
   MpiRequest* req = iter->second;
@@ -123,19 +123,19 @@ DirectPut::incomingAck(MpiMessage *msg)
 void
 DirectPut::incoming(MpiMessage* msg)
 {
-  mpi_queue_protocol_debug("RDMA put incoming %s", msg->toString().c_str());
-  switch(msg->sstmac::hw::NetworkMessage::type()){
-  case sstmac::hw::NetworkMessage::rdma_put_sent_ack: {
+  //mpi_queue_protocol_debug("RDMA put incoming %s", msg->toString().c_str());
+  switch(msg->SST::Hg::NetworkMessage::type()){
+  case SST::Hg::NetworkMessage::rdma_put_sent_ack: {
     incomingAck(msg);
     break;
   }
-  case sstmac::hw::NetworkMessage::rdma_put_payload: {
+  case SST::Hg::NetworkMessage::rdma_put_payload: {
     incomingPayload(msg);
     break;
   }
   default:
-    spkt_abort_printf("Invalid message type %s to RDMA put protocol",
-                      sstmac::hw::NetworkMessage::tostr(msg->sstmac::hw::NetworkMessage::type()));
+    sst_hg_abort_printf("Invalid message type %s to RDMA put protocol",
+                      SST::Hg::NetworkMessage::tostr(msg->SST::Hg::NetworkMessage::type()));
   }
 }
 

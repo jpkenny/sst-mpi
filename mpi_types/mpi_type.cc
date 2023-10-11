@@ -169,12 +169,12 @@ MpiType::init_primitive(const std::string &labelit, MpiType* b1,
   init_primitive(labelit.c_str(), b1, b2, s);
 }
 
-sumi::reduce_fxn
+Iris::sumi::reduce_fxn
 MpiType::op(MPI_Op theOp) const
 {
   auto it = fxns_.find(theOp);
   if (it == fxns_.end()){
-    spkt_throw_printf(sprockit::ValueError, "type %s has no operator %d",
+    sst_hg_throw_printf(SST::Hg::ValueError, "type %s has no operator %d",
            toString().c_str(), theOp);
   }
   return it->second;
@@ -185,7 +185,7 @@ MpiType::init_vector(const std::string &labelit, MpiType* base,
                    int count, int block, MPI_Aint byte_stride)
 {
   if (base->id == MPI_Datatype(-1)){
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
         "mpi_type::init_vector: unitialized base type %s",
         base->label.c_str());
   }
@@ -295,7 +295,7 @@ MpiType::bytes_to_elements(size_t bytes) const
 
     return ret;
   }
-  spkt_throw_printf(sprockit::ValueError,
+  sst_hg_throw_printf(SST::Hg::ValueError,
                    "mpitype::bytes_to_elements: invalid type %d",
                    type_);
   return 0;
@@ -435,7 +435,7 @@ MpiType::pack_action(void* packed_buf, void* unpacked_buf, bool pack) const
     break;
   }
   case NONE: {
-    sprockit::abort("mpi_type::pack_action: cannot pack NONE type");
+    SST::Hg::abort("mpi_type::pack_action: cannot pack NONE type");
   }
   }
 }

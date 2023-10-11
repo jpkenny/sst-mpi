@@ -53,7 +53,7 @@ keyval::clone(int k) const {
     int flag = 0;
     (copy_)(-1, key_, extra_, val_, ret->val_, &flag);
     if(flag != 0) {
-      spkt_throw_printf(sprockit::SpktError,
+      sst_hg_throw_printf(SST::Hg::HgError,
                        "mpi_comm::keyval - copy function returned with flag %d", flag);
     }
     return ret;

@@ -44,6 +44,7 @@ Questions? Contact sst-macro-help@sandia.gov
 
 #include <sst/elements/mercury/operating_system/libraries/library.h>
 #include <sst/elements/mercury/operating_system/libraries/api.h>
+#include <sst_mpi_macro.h>
 
 //#include <sstmac/common/stats/ftq_tag.h>
 
@@ -72,6 +73,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/common/factory.h>
 
 #include <sst/elements/iris/sumi/sim_transport.h>
+#include <sst/elements/iris/sumi/collective_message.h>
 
 //#include <sumi-mpi/otf2_output_stat_fwd.h>
 
@@ -79,9 +81,9 @@ Questions? Contact sst-macro-help@sandia.gov
 
 namespace SST::MPI {
 
-class MpiApi : public sumi::SimTransport
+class MpiApi : public SST::Iris::sumi::SimTransport
 {
-  friend class OTF2Writer;
+//  friend class OTF2Writer;
  public:
   SST_ELI_REGISTER_DERIVED(
     API,
@@ -91,7 +93,7 @@ class MpiApi : public sumi::SimTransport
     SST_ELI_ELEMENT_VERSION(1,0,0),
     "provides the MPI transport API")
 
-  MpiApi(SST::Params& params, sstmac::sw::App* app, SST::Component* comp);
+  MpiApi(SST::Params& params, SST::Hg::App* app, SST::Component* comp);
 
   static void deleteStatics();
 
@@ -288,7 +290,7 @@ class MpiApi : public sumi::SimTransport
 
   int iprobe(int source, int tag, MPI_Comm comm, int* flag, MPI_Status *status);
 
-  int barrier(MPI_Comm comm);
+ int barrier(MPI_Comm comm);
 
   int bcast(int count, MPI_Datatype datatype, int root, MPI_Comm comm);
 
@@ -651,7 +653,7 @@ class MpiApi : public sumi::SimTransport
        MpiType* old_type, MPI_Datatype* outtype);
 
   void startMpiCollective(
-      Collective::type_t ty,
+      SST::Iris::sumi::Collective::type_t ty,
       const void* sendbuf, void* recvbuf,
       MPI_Datatype sendtype, MPI_Datatype recvtype,
       CollectiveOpBase* op);
@@ -680,35 +682,35 @@ class MpiApi : public sumi::SimTransport
 
   std::string typeLabel(MPI_Datatype tid);
 
-  sumi::CollectiveDoneMessage*  startAllgather(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startAllgather(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startAlltoall(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startAlltoall(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startAllreduce(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startAllreduce(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startBarrier(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startBarrier(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startBcast(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startBcast(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startGather(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startGather(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startReduce(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startReduce(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startReduceScatter(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startReduceScatter(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startReduceScatterBlock(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startReduceScatterBlock(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startScan(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startScan(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startScatter(CollectiveOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startScatter(CollectiveOp* op);
 
-  sumi::CollectiveDoneMessage*  startAllgatherv(CollectivevOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startAllgatherv(CollectivevOp* op);
 
-  sumi::CollectiveDoneMessage*  startAlltoallv(CollectivevOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startAlltoallv(CollectivevOp* op);
 
-  sumi::CollectiveDoneMessage*  startGatherv(CollectivevOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage*  startGatherv(CollectivevOp* op);
 
-  sumi::CollectiveDoneMessage* startScatterv(CollectivevOp* op);
+  SST::Iris::sumi::CollectiveDoneMessage* startScatterv(CollectivevOp* op);
 
   void finishCollectiveOp(CollectiveOpBase* op_);
 
@@ -801,7 +803,7 @@ class MpiApi : public sumi::SimTransport
     return ret;
   }
 
-  reduce_fxn getCollectiveFunction(CollectiveOpBase* op);
+  SST::Iris::sumi::reduce_fxn getCollectiveFunction(CollectiveOpBase* op);
 
   void checkInit();
 
@@ -823,7 +825,7 @@ class MpiApi : public sumi::SimTransport
   static const MPI_Op first_custom_op_id = 1000;
   MPI_Op next_op_id_;
 
-  static sstmac::FTQTag mpi_tag;
+//  static sstmac::FTQTag mpi_tag;
 
   MpiCommFactory comm_factory_;
 
@@ -883,16 +885,16 @@ class MpiApi : public sumi::SimTransport
 #endif
 
  public:
-  void logMessageDelay(Message *msg, uint64_t bytes, int stage,
-                       sstmac::TimeDelta sync_delay, sstmac::TimeDelta active_delay,
-                       sstmac::TimeDelta time_since_quiesce) override;
+  void logMessageDelay(SST::Iris::sumi::Message *msg, uint64_t bytes, int stage,
+                       SST::Hg::TimeDelta sync_delay, SST::Hg::TimeDelta active_delay,
+                       SST::Hg::TimeDelta time_since_quiesce) override;
 
  private:
   MPI_Call current_call_;
 
 };
 
-MpiApi* sstmac_mpi();
+MpiApi* sst_mpi();
 
 }
 

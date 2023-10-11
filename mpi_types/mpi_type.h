@@ -61,16 +61,18 @@ struct pairdata;
 struct vecdata;
 struct inddata;
 
-}
-
-
-namespace sumi {
-
-using sumi::ReduceOp;
-using sumi::Add;
-using sumi::And;
-using sumi::Min;
-using sumi::Max;
+using SST::Iris::sumi::ReduceOp;
+using SST::Iris::sumi::Add;
+using SST::Iris::sumi::And;
+using SST::Iris::sumi::Min;
+using SST::Iris::sumi::Max;
+using SST::Iris::sumi::Or;
+using SST::Iris::sumi::Prod;
+using SST::Iris::sumi::LXOr;
+using SST::Iris::sumi::BAnd;
+using SST::Iris::sumi::BOr;
+using SST::Iris::sumi::BOr;
+using SST::Iris::sumi::BXOr;
 
 /// MPI datatypes.
 class MpiType
@@ -97,7 +99,7 @@ class MpiType
                    int block, MPI_Aint byte_stride);
 
   void init_indexed(const std::string &labelit,
-           inddata* dat, int sz, int ext);
+                    inddata* dat, int sz, int ext);
 
   // id gets assigned automatically by the constructor.
   MPI_Datatype id;
@@ -154,7 +156,7 @@ class MpiType
     return contiguous_;
   }
 
-  std::unordered_map<MPI_Op, sumi::reduce_fxn> fxns_;
+  std::unordered_map<MPI_Op, SST::Iris::sumi::reduce_fxn> fxns_;
 
   template <typename data_t>
   void init_integer(const char* name){
@@ -169,7 +171,7 @@ class MpiType
     init_ops<data_t>();
   }
 
-  void initOp(MPI_Op op, sumi::reduce_fxn fxn){
+  void initOp(MPI_Op op, SST::Iris::sumi::reduce_fxn fxn){
     fxns_[op] = fxn;
   }
 
@@ -196,7 +198,7 @@ class MpiType
     fxns_[MPI_BXOR] = &ReduceOp<BXOr,data_t>::op;
   }
 
-  sumi::reduce_fxn op(MPI_Op theOp) const;
+  SST::Iris::sumi::reduce_fxn op(MPI_Op theOp) const;
 
   std::string toString() const;
 

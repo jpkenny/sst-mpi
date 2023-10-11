@@ -85,8 +85,7 @@ MpiQueue::sortbyseqnum::operator()(MpiMessage* a, MpiMessage*b) const
   return (a->seqnum() < b->seqnum());
 }
 
-MpiQueue::MpiQueue(SST::Params& params, int task_id,
-                   MpiApi* api, CollectiveEngine*  /*engine*/) :
+MpiQueue::MpiQueue(SST::Params& params, int task_id, MpiApi* api, Iris::sumi::CollectiveEngine* engine) :
   queue_(api->parent()->os()),
   taskid_(task_id),
   api_(api)
@@ -133,9 +132,9 @@ MpiQueue::init()
   init.pt2pt_cq_id = pt2pt_cq_;
   init.all_equal = true;
   auto cmsg = api_->engine()->allreduce(&init, &init, 1, sizeof(init_struct), 0, init_fxn,
-                            Message::default_cq);
+                                        MpiMessage::Message::default_cq);
   if (cmsg == nullptr){
-    cmsg = api_->engine()->blockUntilNext(Message::default_cq);
+    cmsg = api_->engine()->blockUntilNext(MpiMessage::default_cq);
   }
 
   if (cmsg->tag() != 0){
@@ -171,7 +170,7 @@ MpiQueue::send(MpiRequest *key, int count, MPI_Datatype type,
 {
   MpiType* typeobj = api_->typeFromId(type);
   if (typeobj->packed_size() < 0){
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
       "MPI_Datatype %s has negative size %ld",
       api_->typeStr(type).c_str(), typeobj->packed_size());
   }
@@ -188,10 +187,10 @@ MpiQueue::send(MpiRequest *key, int count, MPI_Datatype type,
 
   MpiProtocol* prot = protocols_[prot_id];
 
-  mpi_queue_debug("starting send count=%d, type=%s, dest=%d, tag=%d, comm=%s, prot=%s",
-    count, api_->typeStr(type).c_str(), int(dest),
-    int(tag), api_->commStr(comm).c_str(),
-    prot->toString().c_str());
+//  mpi_queue_debug("starting send count=%d, type=%s, dest=%d, tag=%d, comm=%s, prot=%s",
+//    count, api_->typeStr(type).c_str(), int(dest),
+//    int(tag), api_->commStr(comm).c_str(),
+//    prot->toString().c_str());
 
   TaskId dst_tid = comm->peerTask(dest);
   prot->start(buffer, comm->rank(), dest, dst_tid, count, typeobj,
@@ -205,21 +204,21 @@ MpiQueue::findMatchingRecv(MpiQueueRecvRequest* req)
   for (auto it = need_recv_match_.begin(); it != need_recv_match_.end(); ++it) {
     MpiMessage* mess = *it;
     if (req->matches(mess)) {
-      mpi_queue_debug("matched recv tag=%s,src=%s on comm=%s to send %s",
-        api_->tagStr(req->tag_).c_str(), 
-        api_->srcStr(req->source_).c_str(),
-        api_->commStr(req->comm_).c_str(),
-        mess->toString().c_str());
+//      mpi_queue_debug("matched recv tag=%s,src=%s on comm=%s to send %s",
+//        api_->tagStr(req->tag_).c_str(),
+//        api_->srcStr(req->source_).c_str(),
+//        api_->commStr(req->comm_).c_str(),
+//        mess->toString().c_str());
 
       need_recv_match_.erase(it);
       return mess;
     }
   }
-  mpi_queue_debug("could not match recv tag=%s, src=%s to any of %d sends on comm=%s",
-    api_->tagStr(req->tag_).c_str(), 
-    api_->srcStr(req->source_).c_str(),
-    need_recv_match_.size(),
-    api_->commStr(req->comm_).c_str());
+//  mpi_queue_debug("could not match recv tag=%s, src=%s to any of %d sends on comm=%s",
+//    api_->tagStr(req->tag_).c_str(),
+//    api_->srcStr(req->source_).c_str(),
+//    need_recv_match_.size(),
+//    api_->commStr(req->comm_).c_str());
 
   need_send_match_.push_back(req);
   return nullptr;
@@ -235,9 +234,9 @@ MpiQueue::recv(MpiRequest* key, int count,
                 MpiComm* comm,
                 void* buffer)
 {
-  mpi_queue_debug("starting recv count=%d, type=%s, src=%s, tag=%s, comm=%s, buffer=%p",
-        count, api_->typeStr(type).c_str(), api_->srcStr(source).c_str(),
-        api_->tagStr(tag).c_str(), api_->commStr(comm).c_str(), buffer);
+//  mpi_queue_debug("starting recv count=%d, type=%s, src=%s, tag=%s, comm=%s, buffer=%p",
+//        count, api_->typeStr(type).c_str(), api_->srcStr(source).c_str(),
+//        api_->tagStr(tag).c_str(), api_->commStr(comm).c_str(), buffer);
 
   MpiQueueRecvRequest* req = new MpiQueueRecvRequest(api_->now(), key, this,
                             count, type, source, tag, comm->id(), buffer);
@@ -266,9 +265,9 @@ void
 MpiQueue::probe(MpiRequest* key, MpiComm* comm,
                  int source, int tag)
 {
-  mpi_queue_debug("starting probe src=%s, tag=%s, comm=%s",
-    api_->srcStr(source).c_str(), api_->tagStr(tag).c_str(),
-    api_->commStr(comm).c_str());
+//  mpi_queue_debug("starting probe src=%s, tag=%s, comm=%s",
+//    api_->srcStr(source).c_str(), api_->tagStr(tag).c_str(),
+//    api_->commStr(comm).c_str());
 
   mpi_queue_probe_request* req = new mpi_queue_probe_request(key, comm->id(), source, tag);
   // Figure out whether we already have a matching message.
@@ -293,9 +292,9 @@ MpiQueue::iprobe(MpiComm* comm,
                   int tag,
                   MPI_Status* stat)
 {
-  mpi_queue_debug("starting immediate probe src=%s, tag=%s, comm=%s",
-    api_->srcStr(source).c_str(), api_->tagStr(tag).c_str(),
-    api_->commStr(comm).c_str());
+//  mpi_queue_debug("starting immediate probe src=%s, tag=%s, comm=%s",
+//    api_->srcStr(source).c_str(), api_->tagStr(tag).c_str(),
+//    api_->commStr(comm).c_str());
 
   mpi_queue_probe_request req(NULL, comm->id(), source, tag);
   for (auto it = need_recv_match_.begin(); it != need_recv_match_.end(); ++it) {
@@ -328,10 +327,10 @@ MpiQueue::findMatchingRecv(MpiMessage* message)
 }
 
 void
-MpiQueue::incomingCollectiveMessage(sumi::Message* m)
+MpiQueue::incomingCollectiveMessage(Iris::sumi::Message* m)
 {
-  CollectiveWorkMessage* msg = safe_cast(CollectiveWorkMessage, m);
-  CollectiveDoneMessage* cmsg = api_->engine()->incoming(msg);
+  Iris::sumi::CollectiveWorkMessage* msg = safe_cast(Iris::sumi::CollectiveWorkMessage, m);
+  Iris::sumi::CollectiveDoneMessage* cmsg = api_->engine()->incoming(msg);
   if (cmsg){
     MpiComm* comm = safe_cast(MpiComm, cmsg->dom());
     MpiRequest* req = comm->getRequest(cmsg->tag());
@@ -347,9 +346,9 @@ MpiQueue::incomingCollectiveMessage(sumi::Message* m)
 // or a new handshake request
 //
 void
-MpiQueue::incomingPt2ptMessage(Message* m)
+MpiQueue::incomingPt2ptMessage(Iris::sumi::Message* m)
 {
-  mpi_queue_debug("incoming new message %s", m->toString().c_str());
+  //mpi_queue_debug("incoming new message %s", m->toString().c_str());
 
   MpiMessage* message = safe_cast(MpiMessage, m);
 
@@ -362,8 +361,8 @@ MpiQueue::incomingPt2ptMessage(Message* m)
   TaskId tid(message->sender());
   auto& next_inbound = next_inbound_[tid];
   if (message->seqnum() == next_inbound){
-    mpi_queue_debug("seqnum for task %d matched expected seqnum %d and advanced to next seqnum",
-        int(tid), int(next_inbound));
+//    mpi_queue_debug("seqnum for task %d matched expected seqnum %d and advanced to next seqnum",
+//        int(tid), int(next_inbound));
 
 
     handlePt2ptMessage(message);
@@ -374,8 +373,8 @@ MpiQueue::incomingPt2ptMessage(Message* m)
       hold_list_t::iterator it = held_[tid].begin(), end = held_[tid].end();
       while (it != end) {
         MpiMessage* mess = *it;
-        mpi_queue_debug("handling out-of-order message for task %d, seqnum %d",
-            int(tid), mess->seqnum());
+//        mpi_queue_debug("handling out-of-order message for task %d, seqnum %d",
+//            int(tid), mess->seqnum());
         if (mess->seqnum() <= next_inbound_[tid]) {
           //it = held_[tid].erase(it);
           it++;
@@ -389,11 +388,11 @@ MpiQueue::incomingPt2ptMessage(Message* m)
       held_[tid].erase(held_[tid].begin(), it);
     }
   } else if (message->seqnum() < next_inbound){
-    spkt_abort_printf("message sequence went backwards on %s from %d",
+    sst_hg_abort_printf("message sequence went backwards on %s from %d",
                       message->toString().c_str(), next_inbound);
   } else {
-    mpi_queue_debug("message arrived out-of-order with seqnum %d, didn't match expected %d for task %d",
-        message->seqnum(), int(next_inbound), int(tid));
+//    mpi_queue_debug("message arrived out-of-order with seqnum %d, didn't match expected %d for task %d",
+//        message->seqnum(), int(next_inbound), int(tid));
     held_[tid].insert(message);
   }
 }
@@ -422,14 +421,14 @@ MpiQueue::handlePt2ptMessage(MpiMessage* message)
 }
 
 void
-MpiQueue::incomingMessage(sumi::Message* msg)
+MpiQueue::incomingMessage(Iris::sumi::Message* msg)
 {
   if (msg->cqId() == pt2pt_cq_){
     incomingPt2ptMessage(msg);
   } else if (msg->cqId() == coll_cq_){
     incomingCollectiveMessage(msg);
   } else {
-    spkt_abort_printf("Got bad completion queue %d for %s",
+    sst_hg_abort_printf("Got bad completion queue %d for %s",
                       msg->cqId(), msg->toString().c_str());
   }
 }
@@ -437,44 +436,44 @@ MpiQueue::incomingMessage(sumi::Message* msg)
 void
 MpiQueue::nonblockingProgress()
 {
-  sumi::Message* msg = api_->poll(false); //do not block
+  Iris::sumi::Message* msg = api_->poll(false); //do not block
   while (msg){
     incomingMessage(msg);
     msg = api_->poll(false);
   }
 }
 
-sstmac::Timestamp
+SST::Hg::Timestamp
 MpiQueue::progressLoop(MpiRequest* req)
 {
   if (!req || req->isComplete()) {
     return api_->now();
   }
 
-  mpi_queue_debug("entering progress loop");
+  //mpi_queue_debug("entering progress loop");
 
-  sstmac::Timestamp wait_start = api_->now();
+  SST::Hg::Timestamp wait_start = api_->now();
   while (!req->isComplete()) {
-    mpi_queue_debug("blocking on progress loop");
-    sumi::Message* msg = queue_.find_any();
+    //mpi_queue_debug("blocking on progress loop");
+    Iris::sumi::Message* msg = queue_.find_any();
     if (!msg){
-      spkt_abort_printf("polling returned null message");
+      sst_hg_abort_printf("polling returned null message");
     }
     req->setWaitStart(wait_start);
     incomingMessage(msg);
   }
 
-  mpi_queue_debug("finishing progress loop");
+  //mpi_queue_debug("finishing progress loop");
   return api_->now();
 }
 
 bool
 MpiQueue::atLeastOneComplete(const std::vector<MpiRequest*>& req)
 {
-  mpi_queue_debug("checking if any of %d requests is done", (int)req.size());
+  //mpi_queue_debug("checking if any of %d requests is done", (int)req.size());
   for (int i=0; i < (int) req.size(); ++i) {
     if (req[i] && req[i]->isComplete()) {
-      mpi_queue_debug("request is done");
+      //mpi_queue_debug("request is done");
       return true;
     }
   }
@@ -484,23 +483,23 @@ MpiQueue::atLeastOneComplete(const std::vector<MpiRequest*>& req)
 void
 MpiQueue::startProgressLoop(const std::vector<MpiRequest*>& reqs)
 {
-  mpi_queue_debug("starting progress loop");
+  //mpi_queue_debug("starting progress loop");
   while (!atLeastOneComplete(reqs)) {
-    mpi_queue_debug("blocking on progress loop");
-    sumi::Message* msg = queue_.find_any();
+    //mpi_queue_debug("blocking on progress loop");
+    Iris::sumi::Message* msg = queue_.find_any();
     if (!msg){
-      spkt_abort_printf("polling returned null message");
+      sst_hg_abort_printf("polling returned null message");
     }
     incomingMessage(msg);
   }
-  mpi_queue_debug("finishing progress loop");
+  //mpi_queue_debug("finishing progress loop");
 }
 
 void
 MpiQueue::forwardProgress(double timeout)
 {
-  mpi_queue_debug("starting forward progress with timeout=%f", timeout);
-  sumi::Message* msg = queue_.find_any(true, timeout); //block until timeout
+  //mpi_queue_debug("starting forward progress with timeout=%f", timeout);
+  Iris::sumi::Message* msg = queue_.find_any(true, timeout); //block until timeout
   if (msg){
     incomingMessage(msg);
   }
@@ -509,7 +508,7 @@ MpiQueue::forwardProgress(double timeout)
 void
 MpiQueue::startProgressLoop(
   const std::vector<MpiRequest*>& req,
-  sstmac::TimeDelta  /*timeout*/)
+  SST::Hg::TimeDelta  /*timeout*/)
 {
   startProgressLoop(req);
 }
@@ -528,7 +527,7 @@ MpiQueue::memcopy(uint64_t bytes)
 void
 MpiQueue::bufferUnexpected(MpiMessage* msg)
 {
-  CallGraphAppend(MPIQueueBufferUnexpectedMessage);
+  //CallGraphAppend(MPIQueueBufferUnexpectedMessage);
   api_->memcopyDelay(msg->payloadBytes());
 }
 

@@ -50,6 +50,9 @@ Questions? Contact sst-macro-help@sandia.gov
 //#include <sstmac/software/process/ftq_scope.h>
 #include <cassert>
 
+#define StartMPICall(fxn)
+#define FinishMPICall(fxn)
+
 namespace SST::MPI {
 
 int
@@ -61,7 +64,7 @@ MpiApi::wait(MPI_Request *request, MPI_Status *status)
 #endif
 
   StartMPICall(MPI_Wait);
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Wait(...)");
+  //mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Wait(...)");
 
   int tag, source;
   int rc = doWait(request, status, tag, source);
@@ -86,8 +89,8 @@ MpiApi::doWait(MPI_Request *request, MPI_Status *status, int& tag, int& source)
     return MPI_SUCCESS;
   }
 
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, 
-    "   MPI_Wait_nonnull(%d)", req);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request,
+//    "   MPI_Wait_nonnull(%d)", req);
 
   MpiRequest* reqPtr = getRequest(req);
   if (!reqPtr->isComplete()){
@@ -126,8 +129,8 @@ MpiApi::waitall(int count, MPI_Request array_of_requests[],
 #endif
 
   StartMPICall(MPI_Waitall);
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, 
-    "MPI_Waitall(%d,...)", count);
+//  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request,
+//    "MPI_Waitall(%d,...)", count);
   bool ignore_status = array_of_statuses == MPI_STATUSES_IGNORE;
   std::vector<MPI_Request> req_vec;
   for (int i=0; i < count; ++i){
@@ -163,7 +166,7 @@ MpiApi::waitany(int count, MPI_Request array_of_requests[], int *indx,
 
 
   StartMPICall(MPI_Waitany);
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Waitany(...)");
+  //mpi_api_debug(sprockit::dbg::mpi, "MPI_Waitany(...)");
   *indx = MPI_UNDEFINED;
   std::vector<MpiRequest*> reqPtrs(count);
   int numNonnull = 0;
@@ -195,7 +198,7 @@ MpiApi::waitany(int count, MPI_Request array_of_requests[], int *indx,
   }
 
   if (!call_completed && numNonnull == 0){
-    spkt_abort_printf("MPI_Waitany: passed in all null requests, undefined behavior");
+    sst_hg_abort_printf("MPI_Waitany: passed in all null requests, undefined behavior");
     call_completed = true;
   }
 
@@ -229,7 +232,7 @@ MpiApi::waitany(int count, MPI_Request array_of_requests[], int *indx,
   }
 
   if(!call_completed){
-    spkt_throw_printf(sprockit::ValueError,
+    sst_hg_throw_printf(SST::Hg::ValueError,
                     "MPI_Waitany finished, but had no completed requests");
   }
 
@@ -249,7 +252,7 @@ MpiApi::waitsome(int incount, MPI_Request array_of_requests[],
 
   StartMPICall(MPI_Waitsome);
   bool ignore_status = array_of_statuses == MPI_STATUSES_IGNORE;
-  mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Waitsome(...)");
+  //mpi_api_debug(sprockit::dbg::mpi | sprockit::dbg::mpi_request, "MPI_Waitsome(...)");
   int numComplete = 0;
   int numIncomplete = 0;
   std::vector<MpiRequest*> reqPtrs(incount);

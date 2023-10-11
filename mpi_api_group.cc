@@ -93,8 +93,8 @@ MpiApi::groupIncl(MPI_Group oldgrp, int num_ranks, const int *ranks, MPI_Group *
   MpiGroup* newgrpPtr = new MpiGroup(vec_ranks);
   addGroupPtr(newgrpPtr, newgrp);
 
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Group_incl(%d,%d,*%d)",
-                num_ranks, oldgrp, *newgrp);
+//  mpi_api_debug(sprockit::dbg::mpi, "MPI_Group_incl(%d,%d,*%d)",
+//                num_ranks, oldgrp, *newgrp);
 
   return MPI_SUCCESS;
 }
@@ -102,8 +102,8 @@ MpiApi::groupIncl(MPI_Group oldgrp, int num_ranks, const int *ranks, MPI_Group *
 bool
 MpiApi::groupCreateWithId(MPI_Group group, int num_members, const int* members)
 {
-  mpi_api_debug(sprockit::dbg::mpi, "MPI_Group_create_with_id(id=%d,n=%d)",
-                group, num_members);
+//  mpi_api_debug(sprockit::dbg::mpi, "MPI_Group_create_with_id(id=%d,n=%d)",
+//                group, num_members);
 
   int my_rank = commWorld()->rank();
   bool in_group = false;
@@ -134,7 +134,7 @@ MpiApi::groupFree(MPI_Group *grp)
   if (*grp != MPI_GROUP_WORLD){
     auto iter = grp_map_.find(*grp);
     if (iter == grp_map_.end()){
-      spkt_abort_printf("Invalid MPI_Group %d passed to group free", *grp);
+      sst_hg_abort_printf("Invalid MPI_Group %d passed to group free", *grp);
     }
     delete iter->second;
     grp_map_.erase(iter);
