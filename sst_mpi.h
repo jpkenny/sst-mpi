@@ -484,7 +484,7 @@ int sst_mpi_mprobe(int source, int tag, MPI_Comm comm, MPI_Message *message, MPI
 int sst_mpi_mrecv(void *buf, int count, MPI_Datatype datatype, MPI_Message *message,
               MPI_Status *status);
 
-/* Nonblocking collectives */
+///* Nonblocking collectives */
 int sst_mpi_comm_idup(MPI_Comm comm, MPI_Comm *newcomm, MPI_Request *request);
 int sst_mpi_ibarrier(MPI_Comm comm, MPI_Request *request);
 int sst_mpi_ibcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm,
@@ -530,7 +530,7 @@ int sst_mpi_iscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype da
 int sst_mpi_iexscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                 MPI_Op op, MPI_Comm comm, MPI_Request *request);
 
-/* Neighborhood collectives */
+///* Neighborhood collectives */
 int sst_mpi_ineighbor_allgather(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
                             void *recvbuf, int recvcount, MPI_Datatype recvtype,
                             MPI_Comm comm, MPI_Request *request);

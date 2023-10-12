@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Questions? Contact sst-macro-help@sandia.gov
 */
 
-#include <sumi-mpi/otf2_output_stat.h>
+//#include <sumi-mpi/otf2_output_stat.h>
 
 #ifdef SSTMAC_OTF2_ENABLED
 
