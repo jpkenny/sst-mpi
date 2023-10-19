@@ -11,7 +11,7 @@
 
 ACLOCAL_AMFLAGS = -I acinclude
 
-noinst_LTLIBRARIES = libsst_mpi.la
+lib_LTLIBRARIES = libsst_mpi.la
 
 library_includedir = $(includedir)
 
