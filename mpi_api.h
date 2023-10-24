@@ -88,8 +88,8 @@ class MpiApi : public SST::Iris::sumi::SimTransport
   SST_ELI_REGISTER_DERIVED(
     API,
     MpiApi,
-    "macro",
-    "mpi",
+    "hg",
+    "MpiApi",
     SST_ELI_ELEMENT_VERSION(1,0,0),
     "provides the MPI transport API")
 

@@ -15,6 +15,8 @@ lib_LTLIBRARIES = libsst_mpi.la
 
 library_includedir = $(includedir)
 
+libsst_mpi_la_LDFLAGS = -module
+
 libsst_mpi_la_SOURCES = \
   mpi_comm/mpi_comm.cc \
   mpi_comm/mpi_group.cc \

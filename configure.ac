@@ -105,7 +105,6 @@ dnl AC_PROG_RANLIB
 AC_PROG_CC
 AC_PROG_CXX
 AC_LANG([C++])
-LT_INIT
 
 LT_INIT([shared disable-static dlopen])
 LT_PREREQ([2.2.6])
