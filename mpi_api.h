@@ -72,7 +72,9 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <unordered_map>
 #include <sst/elements/mercury/common/factory.h>
 
+#include <sst/elements/mercury/operating_system/libraries/api.h>
 #include <sst/elements/iris/sumi/sim_transport.h>
+#include <sst/elements/iris/sumi/message.h>
 #include <sst/elements/iris/sumi/collective_message.h>
 
 //#include <sumi-mpi/otf2_output_stat_fwd.h>
@@ -86,7 +88,7 @@ class MpiApi : public SST::Iris::sumi::SimTransport
 //  friend class OTF2Writer;
  public:
   SST_ELI_REGISTER_DERIVED(
-    API,
+    SST::Hg::API,
     MpiApi,
     "hg",
     "MpiApi",

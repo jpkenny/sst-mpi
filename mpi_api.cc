@@ -110,7 +110,7 @@ namespace SST::MPI {
 MpiApi* sst_mpi()
 {
   SST::Hg::Thread* t = SST::Hg::OperatingSystem::currentThread();
-  return t->getApi<MpiApi>("mpi");
+  return t->getApi<MpiApi>("MpiApi");
 }
 
 //
@@ -228,6 +228,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   //StartMPICall(MPI_Init);
 
+  std::cerr << "MpiApi initing transport\n";
   Iris::sumi::SimTransport::init();
 
   comm_factory_.init(rank_, nproc_);
@@ -250,6 +251,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   status_ = is_initialized;
 
+  std::cerr << "MpiApi initing queue\n";
   queue_->init();
 
   crossed_comm_world_barrier_ = true;
@@ -263,6 +265,7 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   //FinishMPICall(MPI_Init);
 
+  std::cerr << "MpiApi inited\n";
   return MPI_SUCCESS;
 }
 

@@ -51,6 +51,7 @@ Questions? Contact sst-macro-help@sandia.gov
 #include <sst/elements/mercury/operating_system/process/app_id.h>
 #include <sst/elements/mercury/components/operating_system_fwd.h>
 #include <sst/elements/iris/sumi/message.h>
+#include <sst/elements/iris/sumi/collective_message.h>
 #include <sst/elements/mercury/common/thread_safe_new.h>
 #include <sst/elements/mercury/hardware/network/network_message.h>
 #include <sst/core/serialization/serializer.h>
