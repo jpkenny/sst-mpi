@@ -228,7 +228,6 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   //StartMPICall(MPI_Init);
 
-  std::cerr << "MpiApi initing transport\n";
   Iris::sumi::SimTransport::init();
 
   comm_factory_.init(rank_, nproc_);
@@ -251,7 +250,6 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   status_ = is_initialized;
 
-  std::cerr << "MpiApi initing queue\n";
   queue_->init();
 
   crossed_comm_world_barrier_ = true;
@@ -265,7 +263,6 @@ MpiApi::init(int*  /*argc*/, char***  /*argv*/)
 
   //FinishMPICall(MPI_Init);
 
-  std::cerr << "MpiApi inited\n";
   return MPI_SUCCESS;
 }
 
@@ -865,5 +862,4 @@ MPI_Call::ID_str(MPI_function func)
 
 extern "C" void sst_gdb_print_rank(){
   auto api = SST::MPI::sst_mpi();
-  std::cerr << "Current rank is " << api->rank() << std::endl;
 }
